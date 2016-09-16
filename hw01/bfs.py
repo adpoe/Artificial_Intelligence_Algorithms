@@ -16,6 +16,9 @@ from copy import deepcopy
 
 class Node:
     def __init__(self, parent_node, state, puzzle, total_cost=0):
+        # state the puzzle this is for
+        self.puzzle = puzzle
+
         # initialize parent node, so we know where we came from,
         # and later we can find a path
         self.parentNode = parent_node
@@ -37,9 +40,16 @@ class Node:
         # store the successor states
         self.successor_states = puzzle.getSuccessorStates(state)
 
+        self.successor_states_with_parent = set()
+        for elem in self.successor_states:
+            successor_and_parent = (elem, self)
+            self.successor_states_with_parent.add(successor_and_parent)
+
         # store the cost of making it this far,
         # we'll want to either have the max or min
         self.total_cost = total_cost
+
+
 
 class BFS:
    def __init__(self, puzzle):
@@ -50,6 +60,7 @@ class BFS:
 
        # careful here...
        self.current_node = None
+       self.frontier_with_parent = []
 
        # time/space data
        self.solution_path = []
@@ -65,6 +76,8 @@ class BFS:
                          puzzle=self.puzzle, total_cost=0)
        self.graph.add(start_node)
        self.frontier.extendleft(start_node.successor_states)
+       for elem in start_node.successor_states_with_parent:
+            self.frontier_with_parent.append(elem)
 
        # store start_node as parent_node, so we can create nodes as we proceed
        self.current_node = start_node
@@ -74,9 +87,12 @@ class BFS:
 
            # dequeue the first item that was entered in the frontier
            next_state = self.frontier.pop()
+           next_state_and_parent = self.frontier_with_parent.pop(0)
 
            # this new state is now in our graph, so turn it into a node, and add it
-           next_node = Node(parent_node=self.current_node, state=next_state,
+           #next_node = Node(parent_node=self.current_node, state=next_state,
+           #                 puzzle=self.puzzle, total_cost=0)
+           next_node = Node(parent_node=next_state_and_parent[1], state=next_state,
                             puzzle=self.puzzle, total_cost=0)
            self.graph.add(next_node)
            self.current_node = next_node
@@ -93,11 +109,17 @@ class BFS:
                    final_node = final_node.parentNode
 
                path_list.reverse()
+               count = 0
                for elem in path_list:
-                    print "\t->" + str(elem)
-               print "TIME:   Number of Nodes Created="+str(self.num_nodes)
-               print "SPACE:  Frontier Max-Size="+str(self.frontier_max_size)
-               print "SPACE:  Number of States Explored="+str(self.num_explored_states)
+                   count += 1
+                   print "Node "+str(count)+"\t->" + str(elem)
+               print "----- End BFS Search Path ----"
+               print "BFS METRICS:"
+
+               print "\tTIME:   Number of Nodes Created="+str(self.num_nodes+1)
+               print "\tSPACE:  Frontier Maximum Size="+str(self.frontier_max_size+1)
+               print "\tSPACE:  Number of States Explored="+str(self.num_explored_states+1)
+
                return True
 
            # add the node to the explored list, if it's not a match
@@ -109,6 +131,9 @@ class BFS:
                 if not elem in self.explored and \
                    not elem in self.frontier:
                     self.frontier.appendleft(elem)
+                    # with parent
+                    state_and_parent = (elem, next_node)
+                    self.frontier_with_parent.append(state_and_parent)
 
            # book-keeping
            # update frontier size
@@ -120,6 +145,7 @@ class BFS:
            # update graph size
            self.num_nodes = len(self.graph)
 
-
-       return
+       # If we make it this far, there was no solution
+       print "BFS:  No Solutions"
+       return None
 
