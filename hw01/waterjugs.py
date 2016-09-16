@@ -25,12 +25,9 @@ class WaterJugs:
         self.num_jugs = 0
         self.jug_capacities = None
         self.initial_state = None
-        self.goal_sate = None
-        self.action_list = []
+        self.goal_state = None
+        self.transitions = set()
 
-
-        # Variables
-        self.current_state = None
 
 
 
@@ -70,70 +67,105 @@ class WaterJugs:
         # get goal state
         goal_state_str = data_array[3]
         goal_state_tuple = make_tuple(goal_state_str)
-        self.goal_sate = make_tuple(goal_state_str)
-
-        # set current state
-        self.current_state = list(init_state_tuple)
+        self.goal_state = make_tuple(goal_state_str)
 
         # set transitions
-        self.generateActions()
+        self.getSuccessorStates(init_state_tuple)
+        self.getSuccessorStates((1,3))
 
         return
 
-    #        #
-    # States #
-    #        #
-    def getSuccessorStates(self):
-        return
 
+    #            #
+    # Transition #
+    #            #
+    """ Generate all transitions from the actions we've stored...
+        completely emptying and partially emptying
+    """
+    # Fill, Dump, Transfer
+    # call this each time with the current state and fill actions
+
+    def getSuccessorStates(self, current_state):
+        # clear old transitions, if any
+        self.transitions = set()
+
+        # run each transition function
+        self.createFillingActions(current_state)
+        self.createDumpingActions(current_state)
+        self.createTransferActions(current_state)
+        self.createDumpAndTransfer(current_state)
+
+        # store our new transitions
+        successor_transitions = self.transitions
+        successor_states = set()
+        # apply our new transitions, to get final states
+        for elem in successor_transitions:
+            possible_state = [sum(x) for x in zip(current_state, elem)]
+            possible_state_tuple = tuple(possible_state)
+            successor_states.add(possible_state_tuple)
+
+        # double check valid states after this
+        removals = []
+        for elem in successor_states:
+            for index in range(0, len(elem)):
+                i = index
+                if elem[index] > self.jug_capacities[index]:
+                    removals.append(elem)
+
+        for elem in removals:
+            successor_states.remove(elem) #= successor_states - set(elem)
+        return successor_states
 
     #         #
     # Actions #
     #         #
-    # Fill, Dump, Transfer
-    # call this each time with the current state and fill actions
 
-    def generateActions(self):
-        # run each transition function
-        self.createFillingActions()
-        self.createDumpingActions()
-        self.current_state = [2,1]
-        self.createTransferActions()
-        self.createDumpAndTransfer()
-        return
-
-    def createFillingActions(self):
+    def createFillingActions(self, current_state):
         # iterate through jug capacities and find the values of each
         for index in xrange(0, len(self.jug_capacities)):
 
             # build an array for each action, just find the values
             action_array = [0] * len(self.jug_capacities)
-            action_array[index] = self.jug_capacities[index]
+            max_amount = self.jug_capacities[index]
+            current_amount = current_state[index]
+            fill_amount = min(max_amount, max_amount-current_amount)
+            action_array[index] = fill_amount
 
             # transform our array to a tuple
-            # action_tuple = tuple(action_array)
+            action_tuple = tuple(action_array)
 
-            # add the tuple to the the actions list
-            self.action_list.append(action_array)
+            # ensure we're not adding a state that will take us nowhere
+            if not all(v == 0 for v in action_tuple):
+                # add the tuple to the the actions list
+                self.transitions.add(action_tuple)
+
         return
 
 
-    def createDumpingActions(self):
+    def createDumpingActions(self, current_state):
         # iterate through jug capacities and find the values of each
         for index in xrange(0, len(self.jug_capacities)):
 
             # build an array for each action, just find the negative values
             action_array = [0] * len(self.jug_capacities)
-            action_array[index] = -(self.jug_capacities[index])
+            max_amount = self.jug_capacities[index]
+            current_amount = current_state[index]
+            dump_amount = min(max_amount, current_amount)
+            action_array[index] = -(dump_amount)
+
+           # action_array[index] = -(self.jug_capacities[index])
 
             # transform our array to a tuple
-            # action_tuple = tuple(action_array)
+            action_tuple = tuple(action_array)
 
-            # add the tuple to the the actions list
-            self.action_list.append(action_array)
+            # ensure we're not adding a state that will take us nowhere
+            if not all(v == 0 for v in action_tuple):
+                # add the tuple to the the actions list
+                self.transitions.add(action_tuple)
+
         return
 
-    def createTransferActions(self):
+    def createTransferActions(self, current_state):
         # iterate through and then for 0->(index-1) and index+1->end
         # fill with +3 in one and -3 in the other
         # and then do another one with a variable in it?
@@ -148,8 +180,8 @@ class WaterJugs:
             for transfer_index in xrange(0, len(self.jug_capacities)):
 
                 # compute the amount to transfer
-                amount_at_origin = self.current_state[origin_index]
-                amount_at_dest = self.current_state[transfer_index]
+                amount_at_origin = current_state[origin_index]
+                amount_at_dest = current_state[transfer_index]
                 max_at_origin = self.jug_capacities[origin_index]
                 max_at_dest = self.jug_capacities[transfer_index]
 
@@ -161,13 +193,17 @@ class WaterJugs:
                     action_array[origin_index] -= transfer_amount
                     action_array[transfer_index] += transfer_amount
 
+                # transform our array to a tuple
+                action_tuple = tuple(action_array)
+
                 # add the tuple to the the actions list if not already contained
-                if not action_array in self.action_list:
-                    self.action_list.append(action_array)
+                if action_tuple not in self.transitions and \
+                        not all(v == 0 for v in action_tuple):
+                    self.transitions.add(action_tuple)
 
         return
 
-    def createDumpAndTransfer(self):
+    def createDumpAndTransfer(self, current_state):
         for origin_index in xrange(0, len(self.jug_capacities)):
 
             # build an array for each action
@@ -176,8 +212,8 @@ class WaterJugs:
             for transfer_index in xrange(0, len(self.jug_capacities)):
 
                 # compute the amount to transfer
-                amount_at_origin = self.current_state[origin_index]
-                amount_at_dest = self.current_state[transfer_index]
+                amount_at_origin = current_state[origin_index]
+                amount_at_dest = current_state[transfer_index]
                 max_at_origin = self.jug_capacities[origin_index]
                 max_at_dest = self.jug_capacities[transfer_index]
 
@@ -189,26 +225,27 @@ class WaterJugs:
                     action_array[origin_index] -= transfer_amount
                     action_array[transfer_index] += transfer_amount
 
+                # transform our array to a tuple
+                action_tuple = tuple(action_array)
+
                 # add the tuple to the the actions list if not already contained
-                if not action_array in self.action_list:
-                    self.action_list.append(action_array)
+                if action_tuple not in self.transitions and \
+                        not all(v == 0 for v in action_tuple):
+
+                    self.transitions.add(action_tuple)
 
         return
 
-
-
-    #            #
-    # Transition #
-    #            #
-    """ Generate all transitions from the actions we've stored...
-        completely emptying and partially emptying
-    """
 
     #           #
     # Goal Test #
     #           #
-    def goalTest(self):
-        return
+    def goalTest(self, current_state):
+        if current_state == self.goal_state:
+            return True
+        else:
+            return False
+
 
 
     #           #

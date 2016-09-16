@@ -11,6 +11,8 @@
 #
 """
 import waterjugs as WJ
+import waterjugs_tests as wj_tests
+import bfs as bread_first_search
 
 ############################
 ##### MAIN ENTRY POINT #####
@@ -22,6 +24,10 @@ def main():
     # parse the water jugs data
     jug_puzzle = WJ.WaterJugs()
     jug_puzzle.parseInput("jugs.config")
+    wj_tests.WaterJugsTests()
+    #bfs = bread_first_search.BFS(jug_puzzle)
+
+    return
 
 
 
