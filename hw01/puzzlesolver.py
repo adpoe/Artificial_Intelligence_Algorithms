@@ -11,8 +11,10 @@
 #
 """
 import waterjugs as WJ
+import pathplanning as PATH
 import waterjugs_tests as wj_tests
 import bfs as bread_first_search
+
 
 ############################
 ##### MAIN ENTRY POINT #####
@@ -25,8 +27,20 @@ def main():
     jug_puzzle = WJ.WaterJugs()
     jug_puzzle.parseInput("jugs.config")
     wj_tests.WaterJugsTests()
-    #bfs = bread_first_search.BFS(jug_puzzle)
 
+    print "\n ---- WATER JUG BFS ----"
+    bfs = bread_first_search.BFS(jug_puzzle)
+    bfs.bfs()
+
+    # MODEL PATH-PLANNING
+    path_puzzle = PATH.PathPlanning()
+    path_puzzle.parseInput("cities.config")
+    print "\n --- PATH PLANNING BFS ---"
+    arlington_successors = path_puzzle.getSuccessorStates('Arlington')
+    berkshire_successors = path_puzzle.getSuccessorStates('Berkshire')
+    chelmsford_successors = path_puzzle.getSuccessorStates('Chelmsford')
+    bfs_paths = bread_first_search.BFS(path_puzzle)
+    bfs_paths.bfs()
     return
 
 
