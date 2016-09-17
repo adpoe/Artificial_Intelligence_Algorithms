@@ -10,6 +10,7 @@
 # This File:  Breadth First Search  (BFS)
 #
 """
+# TODO: Enable COSTS --> Some conditional, otherwise it's 1
 
 import collections
 from copy import deepcopy
@@ -47,13 +48,13 @@ class Node:
 
         # store the cost of making it this far,
         # we'll want to either have the max or min
-        self.total_cost = total_cost
+        self.cost = total_cost
 
 
 
 class BFS:
    def __init__(self, puzzle):
-       self.frontier = collections.deque()
+       #self.frontier = collections.deque()
        self.explored = set()
        self.puzzle = puzzle
        self.graph = set()
@@ -75,7 +76,7 @@ class BFS:
        start_node = Node(parent_node=None, state=self.puzzle.initial_state,
                          puzzle=self.puzzle, total_cost=0)
        self.graph.add(start_node)
-       self.frontier.extendleft(start_node.successor_states)
+       #self.frontier.extendleft(start_node.successor_states)
        for elem in start_node.successor_states_with_parent:
             self.frontier_with_parent.append(elem)
 
@@ -83,22 +84,23 @@ class BFS:
        self.current_node = start_node
 
        # run the algorithm while the frontier still has valid states
-       while not len(self.frontier) == 0:
+       while not len(self.frontier_with_parent) == 0:
 
            # dequeue the first item that was entered in the frontier
-           next_state = self.frontier.pop()
            next_state_and_parent = self.frontier_with_parent.pop(0)
 
-           # this new state is now in our graph, so turn it into a node, and add it
-           #next_node = Node(parent_node=self.current_node, state=next_state,
-           #                 puzzle=self.puzzle, total_cost=0)
-           next_node = Node(parent_node=next_state_and_parent[1], state=next_state,
-                            puzzle=self.puzzle, total_cost=0)
+           # this new state is now in our graph, so turn it into a node, and add it...
+           # Allow for adding costs by storing it as the 3rd value in our tuple, if needed
+           # Not sure how to do this yet...
+           node_cost = 0
+
+           next_node = Node(parent_node=next_state_and_parent[1], state=next_state_and_parent[0],
+                            puzzle=self.puzzle, total_cost=node_cost)
            self.graph.add(next_node)
            self.current_node = next_node
 
            # check if we have a match, if so -- we've found the end state
-           if self.puzzle.goalTest(next_state):
+           if self.puzzle.goalTest(next_state_and_parent[0]):
                # Need to return the path that got us here
                print "BFS SOLUTION SEARCH PATH: "
                final_node = next_node
@@ -123,22 +125,29 @@ class BFS:
                return True
 
            # add the node to the explored list, if it's not a match
-           self.explored.add(next_state)
+           self.explored.add(next_state_and_parent[0])
+
+           # get all the frontier states, alone
+           frontier_states = []
+           for pair in self.frontier_with_parent:
+               state = pair[0]
+               frontier_states.append(state)
 
            # and expand our frontier, so that it contains everything on the list of our new node
            for elem in next_node.successor_states:
                # but don't add anything that's already in frontier or explored...
                 if not elem in self.explored and \
-                   not elem in self.frontier:
-                    self.frontier.appendleft(elem)
+                   not elem in frontier_states:
+                    # self.frontier.appendleft(elem)
                     # with parent
-                    state_and_parent = (elem, next_node)
+                    cost = next_node.cost
+                    state_and_parent = (elem, next_node, cost)
                     self.frontier_with_parent.append(state_and_parent)
 
            # book-keeping
            # update frontier size
-           if len(self.frontier) > self.frontier_max_size:
-               self.frontier_max_size = len(self.frontier)
+           if len(frontier_states) > self.frontier_max_size:
+               self.frontier_max_size = len(frontier_states)
            # update explored size
            if len(self.explored) > self.num_explored_states:
                self.num_explored_states = len(self.explored)

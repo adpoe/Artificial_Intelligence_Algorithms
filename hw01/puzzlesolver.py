@@ -14,11 +14,15 @@ import waterjugs as WJ
 import pathplanning as PATH
 import waterjugs_tests as wj_tests
 import bfs as bread_first_search
+import dfs as depth_first_search
+import iddfs as iterative_deepening_dfs
 
 
 ############################
 ##### MAIN ENTRY POINT #####
 ############################
+
+# For cost, need to enable the getPathCosts method.... do that in the puzzle classes, abstract it
 def main():
     print "Hello world!"
 
@@ -28,6 +32,7 @@ def main():
     jug_puzzle.parseInput("jugs.config")
     wj_tests.WaterJugsTests()
 
+    print "\n\n\n ============ BREADTH FIRST SEARCH ============"
     print "\n ---- WATER JUG BFS ----"
     bfs = bread_first_search.BFS(jug_puzzle)
     bfs.bfs()
@@ -41,6 +46,23 @@ def main():
     chelmsford_successors = path_puzzle.getSuccessorStates('Chelmsford')
     bfs_paths = bread_first_search.BFS(path_puzzle)
     bfs_paths.bfs()
+
+    print "\n\n\n ============ DEPTH FIRST SEARCH ============"
+    print "\n ---- WATER JUG DFS ----"
+    dfs_jugs = depth_first_search.DFS(jug_puzzle)
+    dfs_jugs.dfs()
+    print "\n --- PATH PLANNING DFS ---"
+    dfs_paths = depth_first_search.DFS(path_puzzle)
+    dfs_paths.dfs()
+
+    print "\n\n\n ============ ITERATIVE-DEEPENING DEPTH FIRST SEARCH ============"
+    print "\n ---- WATER JUG DFS ----"
+    iddfs_jugs = iterative_deepening_dfs.IDDFS(jug_puzzle, max_depth=1, deepening_constant=1)
+    iddfs_jugs.iddfs()
+    print "\n --- PATH PLANNING DFS ---"
+    iddfs_paths = iterative_deepening_dfs.IDDFS(path_puzzle, max_depth=1, deepening_constant=1)
+    iddfs_paths.iddfs()
+
     return
 
 
