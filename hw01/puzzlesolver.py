@@ -10,12 +10,17 @@
 # Notes: This is the main entry point for this program
 #
 """
+
+# There is some randomness in how the data is explored because using the set() data structure in a few places,
+# principally at create of successor states.
+
 import waterjugs as WJ
 import pathplanning as PATH
 import waterjugs_tests as wj_tests
 import bfs as bread_first_search
 import dfs as depth_first_search
 import iddfs as iterative_deepening_dfs
+import unicost as UC
 
 
 ############################
@@ -56,16 +61,21 @@ def main():
     dfs_paths.dfs()
 
     print "\n\n\n ============ ITERATIVE-DEEPENING DEPTH FIRST SEARCH ============"
-    print "\n ---- WATER JUG DFS ----"
+    print "\n ---- WATER JUG IDDFS ----"
     iddfs_jugs = iterative_deepening_dfs.IDDFS(jug_puzzle, max_depth=1, deepening_constant=1)
     iddfs_jugs.iddfs()
-    print "\n --- PATH PLANNING DFS ---"
+    print "\n --- PATH PLANNING IDDFS ---"
     iddfs_paths = iterative_deepening_dfs.IDDFS(path_puzzle, max_depth=1, deepening_constant=1)
     iddfs_paths.iddfs()
 
+    print "\n\n\n ============ UNICOST SEARCH ============"
+    print "\n ---- WATER JUG UNICOST ----"
+    unicost_jugs = UC.Unicost(jug_puzzle)
+    unicost_jugs.unicost()
+    print "\n --- PATH PLANNING UNICOST ---"
+    unicost_paths = UC.Unicost(path_puzzle)
+    unicost_paths.unicost()
     return
-
-
 
 
 
