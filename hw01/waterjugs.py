@@ -69,10 +69,6 @@ class WaterJugs:
         goal_state_tuple = make_tuple(goal_state_str)
         self.goal_state = make_tuple(goal_state_str)
 
-        # set transitions
-        self.getSuccessorStates(init_state_tuple)
-        self.getSuccessorStates((1,3))
-
         return
 
 
@@ -251,6 +247,30 @@ class WaterJugs:
     #           #
     # Path Cost #
     #           #
-    def getPathCost(self):
-        return
+    def getPathCost(self, current_state, successor_state):
+        # For this problem, define "cost" as being the total amount of water moved
+        cost = 0
+        for index in range(0, len(current_state)):
+            # get the difference between the values in each jug
+            current_val = current_state[index]
+            successor_val = successor_state[index]
+            difference = abs(successor_val - current_val)
+            # add that difference to our cost for the move
+            cost += difference
 
+        return cost
+
+
+    #           #
+    # Heuristic #
+    #           #
+    def getHeuristic(self, current_state, successor_state):
+        # pull tuple out of the successor state, so we can use it
+
+        heuristic = 0
+        #print "WATERJUGS-HEURISTIC:  Successor State = " + str(successor_state)
+        for index in range(0,len(self.goal_state)):
+            difference = abs(self.goal_state[index] - successor_state[index])
+            heuristic += difference
+
+        return heuristic

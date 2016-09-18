@@ -13,16 +13,12 @@
 """
 
 from ast import literal_eval as make_tuple
+import math
 
 """
-cities
-[("Arlington",1,1), ("Berkshire",2,3), ("Chelmsford"1,5)]
-"Berkshire"
-"Arlington"
-("Arlington", "Chelmsford", 4)
-("Arlington", "Berkshire", 10)
-("Berkshire", "Chelmsford", 5)
+    ASSUMPTION:  EDGES ARE BI-DIRECTIONAL
 """
+
 
 #####################
 #### PARSE INPUT ####
@@ -88,6 +84,15 @@ class PathPlanning:
             self.actions.add(action)
 
 
+        # create a dictionary we can use to grab coordinates in our heuristic function
+        self.city_coords_dict = {}
+        for index in range(0, len(city_locations)):
+            city_data = city_locations[index]
+            city_name = city_data[0]
+            city_x_coord = city_data[1]
+            city_y_coord = city_data[2]
+            city_x_and_y_coords_tuple = (city_x_coord, city_y_coord)
+            self.city_coords_dict[city_name] = city_x_and_y_coords_tuple
         return
 
     #            #
@@ -125,5 +130,37 @@ class PathPlanning:
     #           #
     # Path Cost #
     #           #
-    def getPathCost(self):
-        return
+    def getPathCost(self, current_state, successor_state):
+        # we don't need the current state for path planning pathCost function
+        # but taking it in so that it's the same API across all puzzles
+        cost = successor_state[1]
+        return cost
+
+    #           #
+    # Heuristic #
+    #           #
+    def getHeuristic(self, current_state, successor_state):
+        # build a dictionary at init, using city names as key
+        # and they euclidean coords as values
+        # then when we get states in this form: ('Berkshire', 2, 3)
+        # get the name for current and successor, and index into that dict
+        # to get its coords, from which we can calculate euclidean distance....
+        sucessor_state_coords = self.city_coords_dict[successor_state[0]]
+        goal_state_coords = self.city_coords_dict[self.goal_state]
+
+        # want to find euclidean distance between our states,
+        # euclidean distance will be our heuristic,
+        # and we want to minimize it
+        euclidean_distance = 0
+
+        # difference in location coordinates, in a straight line
+        for index in range(0, len(goal_state_coords)):
+            first_coord = sucessor_state_coords[index]
+            second_coord = goal_state_coords[index]
+            difference_in_coords = first_coord - second_coord
+            dimensional_difference_squared = difference_in_coords ** 2
+            euclidean_distance += dimensional_difference_squared
+
+        euclidean_distance = math.sqrt(euclidean_distance)
+
+        return euclidean_distance

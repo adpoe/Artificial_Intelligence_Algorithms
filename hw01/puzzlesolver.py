@@ -20,6 +20,7 @@ import waterjugs_tests as wj_tests
 import bfs as bread_first_search
 import dfs as depth_first_search
 import iddfs as iterative_deepening_dfs
+import greedy as greedy_search
 import unicost as UC
 
 
@@ -35,6 +36,7 @@ def main():
     # parse the water jugs data
     jug_puzzle = WJ.WaterJugs()
     jug_puzzle.parseInput("jugs.config")
+    print jug_puzzle.getHeuristic((0,0),(4,2))
     wj_tests.WaterJugsTests()
 
     print "\n\n\n ============ BREADTH FIRST SEARCH ============"
@@ -49,6 +51,7 @@ def main():
     arlington_successors = path_puzzle.getSuccessorStates('Arlington')
     berkshire_successors = path_puzzle.getSuccessorStates('Berkshire')
     chelmsford_successors = path_puzzle.getSuccessorStates('Chelmsford')
+    path_puzzle.getHeuristic(('Berkshire', 4), ('Chelmsford', 10))
     bfs_paths = bread_first_search.BFS(path_puzzle)
     bfs_paths.bfs()
 
@@ -75,6 +78,15 @@ def main():
     print "\n --- PATH PLANNING UNICOST ---"
     unicost_paths = UC.Unicost(path_puzzle)
     unicost_paths.unicost()
+
+    print "\n\n\n ============ GREEDY SEARCH ============"
+    print "\n ---- WATER JUG GREEDY ----"
+    greedy_jugs = greedy_search.Greedy(jug_puzzle)
+    greedy_jugs.greedy()
+    print "\n --- PATH PLANNING GREEDY ---"
+    greedy_paths = greedy_search.Greedy(path_puzzle)
+    greedy_paths.greedy()
+
     return
 
 
