@@ -59,7 +59,7 @@ class Node:
 
 
 class DFS:
-   def __init__(self, puzzle, max_depth):
+   def __init__(self, puzzle, max_depth, num_nodes_created=0, frontier_max_size=0, num_states_explored=0 ):
        # data storage
        self.explored = set()
        self.puzzle = puzzle
@@ -69,12 +69,13 @@ class DFS:
        # careful here...
        self.current_node = None
        self.frontier_with_parent = []
+       self.has_more_nodes = False
 
        # time/space data
        self.solution_path = []
-       self.num_nodes = 0
-       self.frontier_max_size = 0
-       self.num_explored_states = 0
+       self.num_nodes = num_nodes_created
+       self.frontier_max_size = frontier_max_size
+       self.num_explored_states = num_states_explored
 
        return
 
@@ -105,11 +106,25 @@ class DFS:
                             puzzle=self.puzzle, total_cost=node_cost)
            self.graph.add(next_node)
            self.current_node = next_node
+
+
+
            """ DEPTH CHECK """
-           # ensure we don't descend more than max depth
            if self.current_node.depth > self.max_depth:
-               return False
+               self.has_more_nodes = True
+               continue
            """ END DEPTH CHECK """
+
+           #######################################
+           ####### KNOWN SAFE DEPTH CHECK ########
+           #######################################
+           # but potentially incorrect
+           """ DEPTH CHECK """
+           #if self.current_node.depth > self.max_depth:
+           #    return False
+           """ END DEPTH CHECK """
+
+
 
            # check if we have a match, if so -- we've found the end state
            if self.puzzle.goalTest(next_state_and_parent[0]):
@@ -166,6 +181,13 @@ class DFS:
            # update graph size
            self.num_nodes = len(self.graph)
 
+       """ CHECK FOR ITERATIVE DEEPENING """
+       # Nothin on frontier anymore, but are there any more deeper nodes?
+       # If Yes, then we return False --> Which means need to do iterative deepening
+       if self.has_more_nodes == True:
+           return False
+       """"   END CHECK FOR ITERATIVE DEEPENING """
+
        # If we make it this far, there was no solution
        print "IDDFS:  No Solutions"
        return None
@@ -179,10 +201,29 @@ class IDDFS:
         self.max_depth = max_depth
         self.deepening_constant = deepening_constant
         self.puzzle = puzzle
+        self.times_expanded = 0
 
     def iddfs(self):
+        # Note... may need to report on TOTAL SIZE and SPACE for this..
+        # So need to grab that data from the DFS each time it fails, before restarting it.
+        # get nodes made and pass it back in every time as optional arg with regular value of zero
+        # same thing with max frontier size, and num states explored...
+        # Note that these numbers are cumulative...
         while self.DFS.dfs() == False:
             print "Expanding IDDFS"
-            self.max_depth += self.deepening_constant
-            self.DFS = DFS(self.puzzle, self.max_depth)
+            self.times_expanded += 1
 
+            # grow the max depth by our deepening constant
+            self.max_depth += self.deepening_constant
+
+            # get data collected so far on the search
+            nodes_created = self.DFS.num_nodes
+            frontier_max = self.DFS.frontier_max_size
+            count_explored_states = self.DFS.num_explored_states
+
+            # pass our new data back into the search
+            self.DFS = DFS(self.puzzle, self.max_depth,
+                           num_nodes_created=nodes_created,
+                           frontier_max_size= frontier_max,
+                           num_states_explored= count_explored_states)
+        print "\t\tEXPANDED THE SEARCH SPACE: " + str(self.times_expanded) + " TIMES"
