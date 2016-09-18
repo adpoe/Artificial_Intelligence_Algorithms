@@ -20,9 +20,9 @@ import waterjugs_tests as wj_tests
 import bfs as bread_first_search
 import dfs as depth_first_search
 import iddfs as iterative_deepening_dfs
-import greedy as greedy_search
 import unicost as UC
-
+import greedy as greedy_search
+import astar as astar_search
 
 ############################
 ##### MAIN ENTRY POINT #####
@@ -86,6 +86,14 @@ def main():
     print "\n --- PATH PLANNING GREEDY ---"
     greedy_paths = greedy_search.Greedy(path_puzzle)
     greedy_paths.greedy()
+
+    print "\n\n\n ============ A* SEARCH ============"
+    print "\n ---- WATER JUG A* ----"
+    astar_jugs = astar_search.AStar(jug_puzzle)
+    astar_jugs.astar()
+    print "\n --- PATH PLANNING A* ---"
+    astar_paths = astar_search.AStar(path_puzzle)
+    astar_paths.astar()
 
     return
 
