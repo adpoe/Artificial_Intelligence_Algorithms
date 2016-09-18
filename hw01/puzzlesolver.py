@@ -23,6 +23,7 @@ import iddfs as iterative_deepening_dfs
 import unicost as UC
 import greedy as greedy_search
 import astar as astar_search
+import idastar as iterative_deepening_astar
 
 ############################
 ##### MAIN ENTRY POINT #####
@@ -94,6 +95,15 @@ def main():
     print "\n --- PATH PLANNING A* ---"
     astar_paths = astar_search.AStar(path_puzzle)
     astar_paths.astar()
+
+
+    print "\n\n\n ============ A* SEARCH ============"
+    print "\n ---- WATER JUG A* ----"
+    idastar_jugs = iterative_deepening_astar.IDAStar(jug_puzzle, max_depth=1, deepening_constant=1)
+    idastar_jugs.idastar()
+    print "\n --- PATH PLANNING A* ---"
+    idastar_paths = iterative_deepening_astar.IDAStar(path_puzzle, max_depth=1, deepening_constant=1)
+    idastar_paths.idastar()
 
     return
 
