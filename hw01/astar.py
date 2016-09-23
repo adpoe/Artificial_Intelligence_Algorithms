@@ -134,7 +134,7 @@ class AStar:
                    count += 1
                    print "Node "+str(count)+"\t->" + str(elem)
                print "----- End A* Search Path ----"
-               print "GREEDY METRICS:"
+               print "A* METRICS:"
 
                print "\tTIME:   Number of Nodes Created="+str(self.num_nodes+1)
                print "\tSPACE:  Frontier Maximum Size="+str(self.frontier_max_size+1)
@@ -148,7 +148,7 @@ class AStar:
            # get all the frontier states, alone
            frontier_states = []
            for pair in self.frontier_with_parent.queue:
-               state = pair[0]
+               state = pair[1][0]
                frontier_states.append(state)
 
            # and expand our frontier, so that it contains everything on the list of our new node
@@ -156,7 +156,6 @@ class AStar:
                # but don't add anything that's already in frontier or explored...
                 if not elem in self.explored and \
                    not elem in frontier_states:
-                    # self.frontier.appendleft(elem)
                     # with parent
                     """ A* Heuristic = h(n) + pathCost [g(n)] """
                     heuristic = self.puzzle.getHeuristic(next_node.current_state, elem)

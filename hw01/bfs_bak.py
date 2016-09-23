@@ -7,16 +7,13 @@
 # Assignment 01
 # Search Algorithm Implementations for Three Puzzle Types
 #
-# This File:  Unicost Search
+# This File:  Breadth First Search  (BFS)
 #
 """
-# Ideas:  Know using a PQ is necessary. And getting path costs is necessary.
-#         So, Step 1 --> Implement path costs.  Step 2 --> Change current functions to work with a PQ
+# TODO: Enable COSTS --> Some conditional, otherwise it's 1
 
-
-# Use a PQ and give minimum CUMULATIVE COST the maximum priority
-
-import Queue
+import collections
+from copy import deepcopy
 
 class Node:
     def __init__(self, parent_node, state, puzzle, total_cost=0):
@@ -55,7 +52,7 @@ class Node:
 
 
 
-class Unicost:
+class BFS:
    def __init__(self, puzzle):
        #self.frontier = collections.deque()
        self.explored = set()
@@ -64,10 +61,7 @@ class Unicost:
 
        # careful here...
        self.current_node = None
-
-       # Need to make this a PQ and store everything as a tuple with (cost, data)
-       # Here:  (cost, (state, parent_node))
-       self.frontier_with_parent = Queue.PriorityQueue()
+       self.frontier_with_parent = []
 
        # time/space data
        self.solution_path = []
@@ -77,49 +71,40 @@ class Unicost:
 
        return
 
-   def unicost(self):
+   def bfs(self):
        # create a node for the initial state, this is our entry point on the graph
        start_node = Node(parent_node=None, state=self.puzzle.initial_state,
                          puzzle=self.puzzle, total_cost=0)
        self.graph.add(start_node)
        #self.frontier.extendleft(start_node.successor_states)
        for elem in start_node.successor_states_with_parent:
-            self.frontier_with_parent.put_nowait( (0, elem) )
+            self.frontier_with_parent.append(elem)
 
        # store start_node as parent_node, so we can create nodes as we proceed
        self.current_node = start_node
 
        # run the algorithm while the frontier still has valid states
-       while self.frontier_with_parent.empty() == False:
+       while not len(self.frontier_with_parent) == 0:
 
            # dequeue the first item that was entered in the frontier
-           next_state_and_parent = self.frontier_with_parent.get_nowait()
-           next_state_and_parent = next_state_and_parent[1]
+           next_state_and_parent = self.frontier_with_parent.pop(0)
 
            # this new state is now in our graph, so turn it into a node, and add it...
            # Allow for adding costs by storing it as the 3rd value in our tuple, if needed
-           # Not sure how to do this yet...
-
+           if len(next_state_and_parent) > 2:
+                node_cost = next_state_and_parent[1].total_cost + next_state_and_parent[2]
+           else:
+                node_cost = 0
 
            next_node = Node(parent_node=next_state_and_parent[1], state=next_state_and_parent[0],
-                            puzzle=self.puzzle, total_cost=0)
-
-           # get the path_cost for this node
-           parent_node = next_state_and_parent[1]
-           parent_node_path_cost = parent_node.cost
-           current_node_path_cost = self.puzzle.getPathCost(parent_node.current_state, next_state_and_parent[0])
-           cumulative_cost = parent_node_path_cost + current_node_path_cost
-           # set the path cost for this node
-           next_node.cost=cumulative_cost
-
+                            puzzle=self.puzzle, total_cost=node_cost)
            self.graph.add(next_node)
            self.current_node = next_node
-
 
            # check if we have a match, if so -- we've found the end state
            if self.puzzle.goalTest(next_state_and_parent[0]):
                # Need to return the path that got us here
-               print "UNICOST SOLUTION SEARCH PATH: "
+               print "BFS SOLUTION SEARCH PATH: "
                final_node = next_node
                path_list = [str(final_node.current_state)]
 
@@ -132,8 +117,8 @@ class Unicost:
                for elem in path_list:
                    count += 1
                    print "Node "+str(count)+"\t->" + str(elem)
-               print "----- End UNICOST Search Path ----"
-               print "UNICOST METRICS:"
+               print "----- End BFS Search Path ----"
+               print "BFS METRICS:"
 
                print "\tTIME:   Number of Nodes Created="+str(self.num_nodes+1)
                print "\tSPACE:  Frontier Maximum Size="+str(self.frontier_max_size+1)
@@ -146,7 +131,7 @@ class Unicost:
 
            # get all the frontier states, alone
            frontier_states = []
-           for pair in self.frontier_with_parent.queue:
+           for pair in self.frontier_with_parent:
                state = pair[0]
                frontier_states.append(state)
 
@@ -157,9 +142,9 @@ class Unicost:
                    not elem in frontier_states:
                     # self.frontier.appendleft(elem)
                     # with parent
-                    cost = next_node.cost
-                    weighted_state_and_parent = (cost, (elem, next_node))
-                    self.frontier_with_parent.put_nowait(weighted_state_and_parent)
+                    cost = next_node.total_cost
+                    state_and_parent = (elem, next_node)
+                    self.frontier_with_parent.append(state_and_parent)
 
            # book-keeping
            # update frontier size
@@ -172,5 +157,6 @@ class Unicost:
            self.num_nodes = len(self.graph)
 
        # If we make it this far, there was no solution
-       print "Unicost:  No Solutions"
+       print "BFS:  No Solutions"
        return None
+

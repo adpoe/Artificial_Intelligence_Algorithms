@@ -14,6 +14,11 @@
 #        May need to make another field in the Node class that holds the previous heuristic value? Hmm.
 #        Or do we deepen on actual cost? Need to read book.
 
+# If we reach max cost, but there are child nodes left to explore --->
+#   use children nodes' value to inform how much we increase depth on next traversal
+#      In checking bool, set nextMin.... which=value of the child node's pathcost.....
+#      nextMin is lowest of child nodes values...
+
 import Queue
 
 class Node:
@@ -142,7 +147,7 @@ class AStar:
                    count += 1
                    print "Node "+str(count)+"\t->" + str(elem)
                print "----- End Iterative Deepening A* Search Path ----"
-               print "GREEDY METRICS:"
+               print "ITERATIVE DEEPENING A* METRICS:"
 
                print "\tTIME:   Number of Nodes Created="+str(self.num_nodes+1)
                print "\tSPACE:  Frontier Maximum Size="+str(self.frontier_max_size+1)

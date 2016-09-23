@@ -10,7 +10,10 @@
 # This File:  Depth First Search  (DFS)
 #
 """
-# TODO: Enable COSTS --> Some conditional, otherwise it's 1
+# make tree search instead of graph search, just look up 1 parent..
+# then use this to create the CostLimitedDFS... with a STACK inside IDA*, instead of what's already there.
+# IDA* isn't exactly an iterative deepening A*, it's a repeated cost-limited-dfs
+
 
 
 import collections

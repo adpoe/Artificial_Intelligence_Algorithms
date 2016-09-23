@@ -59,7 +59,7 @@ class Node:
 
 
 class DFS:
-   def __init__(self, puzzle, max_depth, num_nodes_created=0, frontier_max_size=0, num_states_explored=0 ):
+   def __init__(self, puzzle, max_depth, num_nodes_created=0, frontier_max_size=0, num_states_explored=0):
        # data storage
        self.explored = set()
        self.puzzle = puzzle

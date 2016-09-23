@@ -171,5 +171,5 @@ class Greedy:
            self.num_nodes = len(self.graph)
 
        # If we make it this far, there was no solution
-       print "Unicost:  No Solutions"
+       print "Greedy:  No Solutions"
        return None

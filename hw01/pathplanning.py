@@ -24,7 +24,7 @@ import math
 #### PARSE INPUT ####
 #####################
 class PathPlanning:
-    """ Class to model the water jugs problem
+    """ Class to model the path planning problem
     """
 
     def __init__(self):
@@ -103,6 +103,15 @@ class PathPlanning:
         self.transitions = set()
         successor_states = set()
 
+        # make sure we are working with the right data object
+        if type(current_state) is str:
+            # no change
+            current_state = current_state
+        else:
+            current_state = current_state[0]
+
+        # then step through all nodes and grab the data we need, if there's a match at either element
+        # (because nodes are bidrectional, so need to check both ways)
         for elem in self.actions:
             if current_state in elem:
                 if elem[0] == current_state:
@@ -133,7 +142,7 @@ class PathPlanning:
     def getPathCost(self, current_state, successor_state):
         # we don't need the current state for path planning pathCost function
         # but taking it in so that it's the same API across all puzzles
-        cost = successor_state[1]
+        cost = int(successor_state[1])
         return cost
 
     #           #
