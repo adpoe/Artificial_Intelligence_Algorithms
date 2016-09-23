@@ -19,6 +19,7 @@ import pancakes as pancakes
 # import tests to ensure problem types are working correctly
 import waterjugs_tests as wj_tests
 import pathplanning_tests as path_tests
+import pancakes_tests as pancake_tests
 
 # import search types
 import bfs as breadth_first_search
@@ -27,6 +28,7 @@ import iddfs as iterative_deepending_dfs
 import unicost as unicost_search
 import greedy as greedy_search
 import idastar as idastar_search
+import astar as astar_search
 
 
 class TestCases:
@@ -42,6 +44,14 @@ class TestCases:
         self.cities_puzzle.parseInput('test_cities.config')
         path_tests.PathPlanningTests()
 
+        # initialize pancakes tests
+        self.pancakes_puzzle = pancakes.BurntPancakes()
+        self.pancakes_puzzle.parseInput('test_pancakes1.config')
+        pancake_tests.PancakeTests()
+
+        self.big_pancakes_puzzle = pancakes.BurntPancakes()
+        self.big_pancakes_puzzle.parseInput('test_pancakes2.config')
+
 
 
     def run_full_test_suite(self):
@@ -52,6 +62,9 @@ class TestCases:
         # run the presecribed pancakes tests
         return
 
+    #                     #
+    #    WATER JUG TESTS  #
+    #                     #
     def water_jugs_test_cases(self):
         print "====== WATER JUGS TESTS ======="
         self.wj_bfs()
@@ -75,7 +88,9 @@ class TestCases:
         iddfs.iddfs()
         return
 
-
+    #                        #
+    #    PATH FINDING TESTS  #
+    #                        #
     def path_finding_test_cases(self):
         print "====== PATH FINDING TESTS ======="
         self.path_unicost()
@@ -96,5 +111,41 @@ class TestCases:
 
     def path_idastar(self):
         idastar = idastar_search.IDAStar(self.cities_puzzle, 1, 5)
+        idastar.idastar()
+        return
+
+    #                          #
+    #    BURNT PANCAKES TESTS  #
+    #                          #
+    def pancakes_test_cases_small(self):
+        print "====== BURNT PANCAKE TESTS - SMALL ======="
+        puzzle = self.pancakes_puzzle
+        self.pancake_iddfs(puzzle)
+        self.pancake_astar(puzzle)
+        self.pancake_idastar(puzzle)
+        print "====== END >>> SMALL <<< PANCAKE TESTS ========="
+        return
+
+    def pancakes_test_cases_big(self):
+        print "====== BURNT PANCAKE TESTS - BIG ======="
+        puzzle = self.big_pancakes_puzzle
+        self.pancake_iddfs(puzzle)
+        self.pancake_astar(puzzle)
+        self.pancake_idastar(puzzle)
+        print "====== END >>> BIG <<< PANCAKE TESTS ========="
+        return
+
+    def pancake_iddfs(self, puzzle):
+        iddfs = iterative_deepending_dfs.IDDFS(puzzle, 1, 1)
+        iddfs.iddfs()
+        return
+
+    def pancake_astar(self, puzzle):
+        astar = astar_search.AStar(puzzle)
+        astar.astar()
+        return
+
+    def pancake_idastar(self, puzzle):
+        idastar = idastar_search.IDAStar(puzzle, 1, 5)
         idastar.idastar()
         return

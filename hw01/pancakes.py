@@ -141,8 +141,9 @@ class BurntPancakes:
     # Path Cost #
     #           #
     def getPathCost(self, current_state, successor_state):
-        """ Define 'cost' as total number of pancakes flipped
         """
+        # Define 'cost' as total number of pancakes flipped
+
         # to find the cost, we need to figure out how many pancakes have been flipped,
         # just by looking at difference between current state and successor state
 
@@ -163,22 +164,31 @@ class BurntPancakes:
         cost = last_nonzero_index
 
         return cost
+        """
+        # the path cost here is constant. Every flip is 1 flip.
+        return 1
 
     #           #
     # Heuristic #
     #           #
+    # Heuristic idea from: https://www.aaai.org/ocs/index.php/SOCS/SOCS11/paper/viewFile/4013/4360
     def getHeuristic(self, current_state, successor_state):
         """
         # the heuristic is the value of pancake at the top of the stack - 1
         # because we know we need a flip of that size to move the pancake into position
         # Idea from:  https://inst.eecs.berkeley.edu/~cs188/fa11/section_handouts/section2soln.pdf
-        heuristic = abs(successor_state[0]) - 1
+        """
+        heuristic = successor_state[0] - 1
+        # we want to favor positive-side up, so if we have negative value up front, add one and double it
+        if heuristic <= 0:
+            heuristic += 1
+            heuristic *= 2
 
         # this gives a separate value for each and every successor state, which I like,
         # and that's why I've chosen it.
         return heuristic
-        """
-        return self.getLargesPancakeOutOfPosition(current_state,successor_state)
+
+        #return self.getLargesPancakeOutOfPosition(current_state,successor_state)
 
     def getLargesPancakeOutOfPosition(self, current_state, successor_state):
         largest = 0

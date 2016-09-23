@@ -41,12 +41,13 @@ def main():
     test_cases.water_jugs_test_cases()
     print "\n\n\n"
     test_cases.path_finding_test_cases()
-
+    print "\n\n\n"
+    #test_cases.pancakes_test_cases_small()
     print "Finished WJ Test Cases"
 
     # MODEL PANCAKES
     pancake_puzzle = Pancakes.BurntPancakes()
-    pancake_puzzle.parseInput("test_pancakes1.config")
+    pancake_puzzle.parseInput("small_pancakes.config")
     init_state = pancake_puzzle.initial_state
     successor_states = pancake_puzzle.getSuccessorStates(init_state)
     successor_state_costs = []
@@ -58,7 +59,6 @@ def main():
         heuristic = pancake_puzzle.getHeuristic(init_state, elem)
         successor_state_heuristics.append(heuristic)
 
-    #print "done"
 
     # MODEL WATERJUGS
     # parse the water jugs data
@@ -84,9 +84,8 @@ def main():
     bfs_paths.bfs()
 
     print "\n ---- PANCAKES BFS ----"
-    #pancake_bfs = bread_first_search.BFS(pancake_puzzle)
-    #pancake_bfs.bfs()
-    print "Pancake BFS does not finish in reasonable time. We need an informed search for this one."
+    pancake_bfs = bread_first_search.BFS(pancake_puzzle)
+    pancake_bfs.bfs()
 
     print "\n\n\n ============ DEPTH FIRST SEARCH ============"
     print "\n ---- WATER JUG DFS ----"
@@ -96,9 +95,8 @@ def main():
     dfs_paths = depth_first_search.DFS(path_puzzle)
     dfs_paths.dfs()
     print "\n --- BURNT PANCAKES DFS ---"
-    #dfs_pancakes = depth_first_search.DFS(pancake_puzzle)
-    #dfs_pancakes.dfs()
-    print "Pancake DFS does not finish in reasonable time. We need an informed search for this one."
+    dfs_pancakes = depth_first_search.DFS(pancake_puzzle)
+    dfs_pancakes.dfs()
 
     print "\n\n\n ============ ITERATIVE-DEEPENING DEPTH FIRST SEARCH ============"
     print "\n ---- WATER JUG IDDFS ----"
@@ -108,10 +106,8 @@ def main():
     iddfs_paths = iterative_deepening_dfs.IDDFS(path_puzzle, max_depth=1, deepening_constant=1)
     iddfs_paths.iddfs()
     print "\n --- BURNT PANCAKES IDDFS ---"
-    #iddfs_pancakes = iterative_deepening_dfs.IDDFS(pancake_puzzle, max_depth=1, deepening_constant=1)
-    #iddfs_pancakes.iddfs()
-    print "Again, search space seems to big on this one for an uninformed search. I'm only seeing 4 expansions in a minute or so.\n" \
-          "Beyond that, it looks like the space is growing too quickly, with each node having 11 branches."
+    iddfs_pancakes = iterative_deepening_dfs.IDDFS(pancake_puzzle, max_depth=1, deepening_constant=1)
+    iddfs_pancakes.iddfs()
 
     print "\n\n\n ============ UNICOST SEARCH ============"
     print "\n ---- WATER JUG UNICOST ----"
@@ -121,9 +117,8 @@ def main():
     unicost_paths = UC.Unicost(path_puzzle)
     unicost_paths.unicost()
     print "\n --- BURNT PANCAKES UNICOST ---"
-    #unicost_pancakes = UC.Unicost(pancake_puzzle)
-    #unicost_pancakes.unicost()
-    print "Same here. The burnt pancake problem with our inputs is too large. "
+    unicost_pancakes = UC.Unicost(pancake_puzzle)
+    unicost_pancakes.unicost()
 
     print "\n\n\n ============ GREEDY SEARCH ============"
     print "\n ---- WATER JUG GREEDY ----"
@@ -133,8 +128,8 @@ def main():
     greedy_paths = greedy_search.Greedy(path_puzzle)
     greedy_paths.greedy()
     print "\n --- BURNT PANCAKES GREEDY ---"
-    #greedy_pancakes = greedy_search.Greedy(pancake_puzzle)
-    #greedy_pancakes.greedy()
+    greedy_pancakes = greedy_search.Greedy(pancake_puzzle)
+    greedy_pancakes.greedy()
 
 
     print "\n\n\n ============ A* SEARCH ============"
@@ -145,8 +140,8 @@ def main():
     astar_paths = astar_search.AStar(path_puzzle)
     astar_paths.astar()
     print "\n --- BURNT PANCAKES A* ---"
-    #astar_pancakes = astar_search.AStar(pancake_puzzle)
-    #astar_pancakes.astar()
+    astar_pancakes = astar_search.AStar(pancake_puzzle)
+    astar_pancakes.astar()
 
 
     print "\n\n\n ============ Iterative Deepening A* SEARCH ============"
@@ -157,8 +152,8 @@ def main():
     idastar_paths = iterative_deepening_astar.IDAStar(path_puzzle, max_depth=5, deepening_constant=5)
     idastar_paths.idastar()
     print "\n --- BURNT PANCAKES Iterative Deepening A* ---"
-    #idastar_pancakes = iterative_deepening_astar.IDAStar(pancake_puzzle, max_depth=5, deepening_constant=5)
-    #idastar_pancakes.idastar()
+    idastar_pancakes = iterative_deepening_astar.IDAStar(pancake_puzzle, max_depth=5, deepening_constant=5)
+    idastar_pancakes.idastar()
 
     return
 
