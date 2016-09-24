@@ -172,21 +172,31 @@ class BurntPancakes:
     # Heuristic #
     #           #
     # Heuristic idea from: https://www.aaai.org/ocs/index.php/SOCS/SOCS11/paper/viewFile/4013/4360
-    def getHeuristic(self, current_state, successor_state):
-        """
-        # the heuristic is the value of pancake at the top of the stack - 1
-        # because we know we need a flip of that size to move the pancake into position
-        # Idea from:  https://inst.eecs.berkeley.edu/~cs188/fa11/section_handouts/section2soln.pdf
-        """
-        heuristic = successor_state[0] - 1
-        # we want to favor positive-side up, so if we have negative value up front, add one and double it
-        if heuristic <= 0:
-            heuristic += 1
-            heuristic *= 2
+    """
+    We define the value of the gap heuristic for this problem
+    as the number of stack positions for which the pancake at
+    that position is not of adjacent size to the pancake below it
+    or the pancake at that position has its burnt side in opposite
+    order in relation to the pancake below it.
+    """
+    def gapHeuristic(self, current_state, successor_state):
+        # get number of stack positions for which pancake at that position is NOT
+        # adjacent size (+/- 1) to the pancake below it --> arr[index+1]
+        # OR the pancake at that position has its burnt side in OPPOSITE ORDER
+        # in relation to the pancake below it... So--> if p1 = -, and p2 = +
+        heuristic = 0
+        for index in range(0, len(successor_state)-1):
+            if (successor_state[index] - successor_state[index+1]) > 1:
+                heuristic += 1
+            elif successor_state[index] * successor_state[index+1] < 0:
+                heuristic += 1
+            else:
+                continue
 
-        # this gives a separate value for each and every successor state, which I like,
-        # and that's why I've chosen it.
         return heuristic
+
+    def getHeuristic(self, current_state, successor_state):
+        return self.gapHeuristic(current_state, successor_state)
 
         #return self.getLargesPancakeOutOfPosition(current_state,successor_state)
 

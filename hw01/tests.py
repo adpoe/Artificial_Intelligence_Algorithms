@@ -120,23 +120,23 @@ class TestCases:
     def pancakes_test_cases_small(self):
         print "====== BURNT PANCAKE TESTS - SMALL ======="
         puzzle = self.pancakes_puzzle
-        self.pancake_iddfs(puzzle)
         self.pancake_astar(puzzle)
-        self.pancake_idastar(puzzle)
+        #self.pancake_iddfs(puzzle)
+        #self.pancake_idastar(puzzle)
         print "====== END >>> SMALL <<< PANCAKE TESTS ========="
         return
 
     def pancakes_test_cases_big(self):
         print "====== BURNT PANCAKE TESTS - BIG ======="
         puzzle = self.big_pancakes_puzzle
-        self.pancake_iddfs(puzzle)
         self.pancake_astar(puzzle)
-        self.pancake_idastar(puzzle)
+        #self.pancake_iddfs(puzzle)
+        #self.pancake_idastar(puzzle)
         print "====== END >>> BIG <<< PANCAKE TESTS ========="
         return
 
     def pancake_iddfs(self, puzzle):
-        iddfs = iterative_deepending_dfs.IDDFS(puzzle, 1, 1)
+        iddfs = iterative_deepending_dfs.IDDFS(puzzle, 1, 5)
         iddfs.iddfs()
         return
 
