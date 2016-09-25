@@ -1,0 +1,49 @@
+====== WATER JUGS TESTS =======
+BFS SOLUTION SEARCH PATH: 
+Node 1	->(0, 0)
+Node 2	->(4, 0)
+Node 3	->(0, 4)
+Node 4	->(4, 4)
+Node 5	->(0, 8)
+Node 6	->(4, 8)
+Node 7	->(1, 11)
+Node 8	->(1, 0)
+----- End BFS Search Path ----
+BFS METRICS:
+	TIME:   Number of Nodes Created=17
+	SPACE:  Frontier Maximum Size=4
+	SPACE:  Number of States Explored=16
+DFS SOLUTION SEARCH PATH: 
+Node 1	->(0, 0)
+Node 2	->(4, 0)
+Node 3	->(0, 4)
+Node 4	->(4, 4)
+Node 5	->(0, 8)
+Node 6	->(4, 8)
+Node 7	->(1, 11)
+Node 8	->(1, 0)
+----- End DFS Search Path ----
+DFS METRICS:
+	TIME:   Number of Nodes Created=8
+	SPACE:  Frontier Maximum Size=4
+Expanding IDDFS
+Expanding IDDFS
+Expanding IDDFS
+Expanding IDDFS
+Expanding IDDFS
+Expanding IDDFS
+IDDFS SOLUTION SEARCH PATH: 
+Node 1	->(0, 0)
+Node 2	->(4, 0)
+Node 3	->(0, 4)
+Node 4	->(4, 4)
+Node 5	->(0, 8)
+Node 6	->(4, 8)
+Node 7	->(1, 11)
+Node 8	->(1, 0)
+----- End IDDFS Search Path ----
+IDDFS METRICS:
+	TIME:   Number of Nodes Created=8
+	SPACE:  Frontier Maximum Size=4
+		EXPANDED THE SEARCH SPACE: 6 TIMES
+====== END JUGS TESTS =========

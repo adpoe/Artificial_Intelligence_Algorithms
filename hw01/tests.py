@@ -95,7 +95,7 @@ class TestCases:
         print "====== PATH FINDING TESTS ======="
         self.path_unicost()
         self.path_greedy()
-        self.path_idastar()
+        self.path_astar()
         print "====== END PATH FINDING TESTS ========="
         return
 
@@ -109,9 +109,9 @@ class TestCases:
         greedy.greedy()
         return
 
-    def path_idastar(self):
-        idastar = idastar_search.IDAStar(self.cities_puzzle, 1, 5)
-        idastar.idastar()
+    def path_astar(self):
+        astar = astar_search.AStar(self.cities_puzzle)
+        astar.astar()
         return
 
     #                          #
@@ -122,7 +122,7 @@ class TestCases:
         puzzle = self.pancakes_puzzle
         self.pancake_astar(puzzle)
         #self.pancake_iddfs(puzzle)
-        #self.pancake_idastar(puzzle)
+        self.pancake_idastar(puzzle)
         print "====== END >>> SMALL <<< PANCAKE TESTS ========="
         return
 

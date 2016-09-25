@@ -21,6 +21,7 @@
 
 import Queue
 
+
 class Node:
     def __init__(self, parent_node, state, puzzle, total_cost=0):
         # state the puzzle this is for
@@ -69,6 +70,12 @@ class AStar:
        self.current_node = None
        self.has_more_nodes = False
        self.max_depth = max_depth
+
+       """ Store the next_min here """
+       # start out as infinity
+       self.next_min = float('inf')
+       """ end next_min storage """
+
 
        # Need to make this a PQ and store everything as a tuple with (cost, data)
        # Here:  (cost, (state, parent_node))
@@ -127,6 +134,8 @@ class AStar:
            """ DEPTH CHECK """
            if self.current_node.cost > self.max_depth:
                self.has_more_nodes = True
+               if self.current_node.cost < self.next_min:
+                   self.next_min = self.current_node.cost
                continue
            """ END DEPTH CHECK """
 
@@ -151,7 +160,7 @@ class AStar:
 
                print "\tTIME:   Number of Nodes Created="+str(self.num_nodes+1)
                print "\tSPACE:  Frontier Maximum Size="+str(self.frontier_max_size+1)
-               print "\tSPACE:  Number of States Explored="+str(self.num_explored_states+1)
+               #print "\tSPACE:  Number of States Explored="+str(self.num_explored_states+1)
 
                return True
 
@@ -198,7 +207,7 @@ class AStar:
        return None
 
 class IDAStar:
-    def __init__(self, puzzle, max_depth, deepening_constant):
+    def __init__(self, puzzle, max_depth, deepening_constant=1):
         self.AStar = AStar(puzzle, max_depth) # dfs with our puzzle and max depth
         # get the current node in our dfs and check its depth.... make a whole new dfs if we go over
         # and increment the depth by 3 or something
@@ -218,7 +227,8 @@ class IDAStar:
             self.times_expanded += 1
 
             # grow the max depth by our deepening constant
-            self.max_depth += self.deepening_constant
+            #self.max_depth += self.deepening_constant
+            self.max_depth = self.AStar.next_min
 
             # get data collected so far on the search
             nodes_created = self.AStar.num_nodes

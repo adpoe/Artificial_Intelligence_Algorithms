@@ -97,7 +97,7 @@ class PancakeTests:
         # checking for a difference within one-tenth, because these are Real, floating point numbers,
         # so we'll get weird errors checking strictly for equality (calculations may be off at some small magnitude)
 
-        if heuristic - 4.24 < 0.1:
+        if heuristic == 6:
             return True
         else:
             return False

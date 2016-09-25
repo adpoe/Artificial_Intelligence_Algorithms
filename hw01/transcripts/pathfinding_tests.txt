@@ -1,0 +1,50 @@
+
+====== PATH FINDING TESTS =======
+UNICOST SOLUTION SEARCH PATH: 
+Node 1	->C00
+Node 2	->('C11', 4)
+Node 3	->('C20', 1)
+Node 4	->('C30', 3)
+Node 5	->('C40', 1)
+Node 6	->('C31', 1)
+Node 7	->('C41', 1)
+Node 8	->('C32', 1)
+Node 9	->('C42', 1)
+Node 10	->('C33', 1)
+Node 11	->('C44', 16)
+----- End UNICOST Search Path ----
+UNICOST METRICS:
+	TIME:   Number of Nodes Created=291
+	SPACE:  Frontier Maximum Size=302
+	SPACE:  Number of States Explored=92
+GREEDY SOLUTION SEARCH PATH: 
+Node 1	->C00
+Node 2	->('C11', 4)
+Node 3	->('C22', 8)
+Node 4	->('C33', 12)
+Node 5	->('C44', 16)
+----- End GREEDY Search Path ----
+GREEDY METRICS:
+	TIME:   Number of Nodes Created=5
+	SPACE:  Frontier Maximum Size=17
+	SPACE:  Number of States Explored=4
+A* SOLUTION SEARCH PATH: 
+Node 1	->C00
+Node 2	->('C11', 4)
+Node 3	->('C20', 1)
+Node 4	->('C30', 3)
+Node 5	->('C40', 1)
+Node 6	->('C31', 1)
+Node 7	->('C41', 1)
+Node 8	->('C32', 1)
+Node 9	->('C42', 1)
+Node 10	->('C33', 1)
+Node 11	->('C43', 1)
+Node 12	->('C34', 1)
+Node 13	->('C44', 1)
+----- End A* Search Path ----
+A* METRICS:
+	TIME:   Number of Nodes Created=18
+	SPACE:  Frontier Maximum Size=56
+	SPACE:  Number of States Explored=17
+====== END PATH FINDING TESTS =========

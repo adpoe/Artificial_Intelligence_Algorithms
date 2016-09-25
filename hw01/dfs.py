@@ -124,7 +124,7 @@ class DFS:
 
                print "\tTIME:   Number of Nodes Created="+str(self.num_nodes+1)
                print "\tSPACE:  Frontier Maximum Size="+str(self.frontier_max_size+1)
-               print "\tSPACE:  Number of States Explored="+str(self.num_explored_states+1)
+               #print "\tSPACE:  Number of States Explored="+str(self.num_explored_states+1)
 
                return True
 
