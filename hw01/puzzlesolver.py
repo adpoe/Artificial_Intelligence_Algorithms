@@ -11,8 +11,6 @@
 #
 """
 
-# There is some randomness in how the data is explored because using the set() data structure in a few places,
-# principally at create of successor states.
 
 # import problem types
 import waterjugs as jugs
