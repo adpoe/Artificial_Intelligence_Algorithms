@@ -109,7 +109,16 @@ Upon running the test suite, you will see the following outputs:
 * Tests for each puzzle type, showing that each API endpoint works as expected.
 * Tests for the **jugs puzzle type**, run on the *test_jugs.config* file, for the 'dfs', 'bfs', and 'iddfs' search algorithms.
 * Tests for the **path-finding puzzle type**, run on the *test_cities.config* file, for the 'unicost', 'greedy', and 'astar' search algorithms.
-* Tests for the pacncakes puzzle type, run on the *test_pancakes1.config* file and then the *test_pancakes2.config* file. For the 'iddfs', 'astar', and 'idastar' search algorithms.
+* Tests for the **pancakes puzzle** type, run on the *test_pancakes1.config* file and then the *test_pancakes2.config* file. For the 'iddfs', 'astar', and 'idastar' search algorithms.
+
+## Transcripts
+Transcripts can be found in the "transcipts" folder
+
+## Report
+The report for this project can be found in the file named: "REPORT_CS1571_HW01_ADP59.pdf"
+
+## Data
+I've stored all the data I collected and graphs I created in an excel file named "Algorithm_Data.xlsx"
 
 ## Built With
 

@@ -97,7 +97,7 @@ def main():
         # then it's burnt pancakes puzzle
         puzzle = pancakes.BurntPancakes()
         puzzle.parseInput(config_file)
-    elif "path" in puzzle:
+    elif "cities" in puzzle_name:
         # then it's path planning
         puzzle = paths.PathPlanning()
         puzzle.parseInput(config_file)
