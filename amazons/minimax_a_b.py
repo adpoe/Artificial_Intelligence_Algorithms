@@ -25,10 +25,10 @@ class MiniMax:
         #  --> means we need to propagate the values back up the
         #      tree as part of our minimax algorithm
         successors = self.getSuccessors(node)
-        print "best val = " + str(best_val)
+        print "MiniMax:  Utility Value of Root Node: = " + str(best_val)
         # find the node with our best move
         best_move = None
-        for elem in successors:
+        for elem in successors:   # ---> Need to propagate values up tree for this to work
             if elem.value == best_val:
                 best_move = elem
                 break
@@ -38,6 +38,7 @@ class MiniMax:
 
 
     def max_value(self, node):
+        print "MiniMax-->MAX: Visited Node :: " + node.Name
         if self.isTerminal(node):
             return self.getUtility(node)
 
@@ -53,6 +54,7 @@ class MiniMax:
         return max_value
 
     def min_value(self, node):
+        print "MiniMax-->MIN: Visited Node :: " + node.Name
         if self.isTerminal(node):
             return self.getUtility(node)
 
