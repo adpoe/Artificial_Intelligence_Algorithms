@@ -521,7 +521,17 @@ def adp59(board):
     # board.bWhite --> boolan
     # board.valid_path(src, dst)
     # board.move_queen(src, dst)
-    return
+    values = {}
+    for node in moveTree.root.children:
+        values[node.name] = node.value
+    node_name = max(values.iterkeys(), key=(lambda key: values[key]))
+
+    # change node name to tuple in form
+    # ((r,c), (r,c), (r,c))
+    # ((src), (dst), (arr))
+    (src, dst, arr) = map(ld2rc, node_name.split('-'))
+
+    return (src, dst, arr)
 ###################### Your code between these two comment lines ####################################
         
 def main():
