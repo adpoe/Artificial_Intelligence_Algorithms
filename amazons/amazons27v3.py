@@ -1,4 +1,4 @@
-# Basic El Juego de las Amazonas in Python 2.7
+# CS1571 -- Assignment #3: El Juego de las Amazonas in Python 2.7
 # For more information about the game itself, please refer to:
 #      http://en.wikipedia.org/wiki/Game_of_the_Amazons
 #
@@ -58,7 +58,7 @@
 
 ############################################
 
-import copy, random, re, time, sys, minimax
+import copy, random, re, time, sys
 
 # The Amazons class controls the flow of the game.
 # Its data include:
@@ -121,12 +121,15 @@ class Amazons:
                 # send player a copy of the current board
                 tmp_board = copy.deepcopy(self.board)
                 tstart = time.clock()
+                tmp_board.time_limit = tstart+self.time_limit
                 move = eval("%s(tmp_board)"%p)
                 tstop = time.clock()
                 del tmp_board
 
-                print p,": move:", [rc2ld(x) for x in move],"time:", tstop-tstart, "seconds"
-                if not move:
+                if move:
+                    print p,": move:", [rc2ld(x) for x in move],"time:", tstop-tstart, "seconds"
+                else: 
+                    print p,"time:", tstop-tstart, "seconds"
                     # if move == False --> player resigned   
                     if self.board.bWhite:
                         (wscore, bscore) = (-1,0)
@@ -166,13 +169,14 @@ class Amazons:
 # is on purpose. This is just set up as a way for the game controller to
 # pass information to your automatic player. Although you cannot change
 # the definition of the Board class, you are not constrained to use the
-# Board class as your main state representation. You can define your own
+# Board class as your main state reprsentation. You can define your own
 # State class and copy/transform from Board the info you need.
 
 # The Board class contains the following data:
 #  * config: the board configuration represented as a list of lists.
 #    The assumed convention is (row, column) so config[0][1] = "b0"
 #  * bWhite: binary indicator -- True if it's white's turn to play
+#  * time_limit: deadline for when a move must be returned by
 # The Board class supports the following methods:
 #  * print_board: prints the current board configuration
 #  * valid_path: takes two location tuples (in row, column format) and returns 
@@ -188,6 +192,7 @@ class Amazons:
 #    whether we can end the game
 class Board:
     def __init__(self, size, wqs, bqs):
+        self.time_limit = None
         self.bWhite = True
         self.config = [['.' for c in range(size)] for r in range(size)]
         for (r,c) in wqs:
@@ -223,7 +228,7 @@ class Board:
             print("invalid move: not a straight line")
             return False
         if not h and not w:
-            print("invalid move: same star-end")
+            print("invalid move: same start-end")
             return False
 
         if not h:
@@ -244,11 +249,9 @@ class Board:
     def move_queen(self, src, dst):
         self.config[dst[0]][dst[1]] = self.config[src[0]][src[1]]
         self.config[src[0]][src[1]] = '.'
-        return
 
     def shoot_arrow(self, dst):
         self.config[dst[0]][dst[1]] = 'x'
-        return
 
     def end_turn(self):
         # count up each side's territories
@@ -389,139 +392,7 @@ def human(board):
             return (src,dst,adst)
 
 ###################### Your code between these two comment lines ####################################
-def adp59(board):
-    # takes board state as an input arg
-    board.print_board()
 
-    # make a Game object so we can run our algorithms
-    game = minimax.Game(board)
-
-    # determine who's turn it is to play, and get the queen locations on the board for those
-    # Test Diags
-    queenLocations = game.getQueenLocations()
-    diags = queenLocations[0]
-    allDiags = game.getValidDiags(diags)
-
-    print "diags from " + str(diags)
-    for elem in allDiags:
-        print str(elem)
-
-    diags = queenLocations[1]
-    allDiags = game.getValidDiags(diags)
-    print "diags from " + str(diags)
-    for elem in allDiags:
-        print str(elem)
-    print "got queen diags"
-
-    # Test Verts
-    queenLocations = game.getQueenLocations()
-    verts = queenLocations[0]
-    allVerts = game.getValidVerts(verts)
-
-    print "verts from " + str(verts)
-    for elem in allVerts:
-        print str(elem)
-
-    verts = queenLocations[1]
-    allVerts = game.getValidVerts(verts)
-    print "verts from " + str(verts)
-    for elem in allVerts:
-        print str(elem)
-    print "got queen verts"
-
-    # Test Horzs
-    queenLocations = game.getQueenLocations()
-    horz = queenLocations[0]
-    allHorz = game.getValidHorz(horz)
-
-    print "horz from " + str(horz)
-    for elem in allHorz:
-        print str(elem)
-
-    horz = queenLocations[1]
-    allHorz = game.getValidHorz(horz)
-    print "horz from " + str(horz)
-    for elem in allHorz:
-        print str(elem)
-    print "got queen horz coords"
-
-    # get concat of all moves
-    moves = game.getValidMoves(queenLocations[0])
-    print 'got moves'
-
-
-    # Test Get Queen Future Moves List
-    allMoves = game.getAllFutureQueenLocations(queenLocations)
-    print "TEST --> ALL POSSIBLE QUEEN LOCATIONS"
-    for elem in allMoves:
-        print str(elem)
-
-    # Test Get All Possible  Arrow Moves from Each Queen Location
-    print "TEST --> ALL QUEEN MOVES + ARROW LOCATIONS"
-    game.getArrowLocations(allMoves[0])
-
-    # Test Get ALL MOVES for each queen in a data structure
-    print "TEST --> ALL MOVES!!!"
-    queen_moves = game.getAllMovesForQueens(allMoves)
-    for elem in queen_moves:
-        print str(elem)
-
-    # BUILD A TREE WE CAN SEARCH
-    # THINK --> For minimax, easiest to work on pure values...
-    #           so step through queen moves, test the value of each, and place that value in a node
-    #           along with the src, dst, arrow
-    #           then do minimax as normal
-    #           and we can simply return (src, dst, arr) in an arrow, using what is stored in the node
-    #           ** that's the plan.
-    #
-    # NEED: --> duplicate of the game state? some way to test each move and reset each time?
-    #           In future could do a few steps of this, but just one step for now...
-
-    # TREE STARTS --> with root value zero. Child nodes are the queens and their moves,
-    #                 everything 3 levels down into the queen_moves list
-    #                 ALSO Save board.config as a field in the tree node
-
-    moveTree = minimax.GameTree(queen_moves, board)
-    print "made tree!"
-
-    # get a list of move states for all queens in queenLocations
-    # ---> all move states == all diag, verts and horzs from each queen location that is valid on board
-
-    # get a list of possible arrow states for each move state
-
-    # combine all move states and arrow states into a set of successor states for each queen
-
-    # print the successor state list, ensure it looks okay
-
-    # make the successor states a game tree... that we can parse with minimax
-
-    # run minimax with heuristic and time limit for allotted time
-
-    # return best option
-
-
-    # returns a valid move in form of a tuple of 3 tuples
-    # 1. location of queen to be played
-    # 2. move-to location of the queen
-    # 3. landing site of the arrow
-    #       locations in (row, col) format
-    # (0,0) == bottom left corner
-    # Example move:  ((2,1), (5,1),(0,1))
-    # define additional functions and classes to support your auto player
-    # prefix each with user id
-    # basically, fix minimax from part 1, to generate successsor states,
-    # use a heuristic, etc...
-
-
-
-    #######################
-    #### API // ASSETS ####
-    #######################
-    # board.printBoard() --> void, print method
-    # board.bWhite --> boolan
-    # board.valid_path(src, dst)
-    # board.move_queen(src, dst)
-    return
 ###################### Your code between these two comment lines ####################################
         
 def main():

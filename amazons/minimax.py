@@ -1,4 +1,5 @@
 import itertools
+import copy
 
 ##########################
 ###### MINI-MAX A-B ######
@@ -85,8 +86,212 @@ class AlphaBeta:
 #########################
 ###### GAME OBJECT ######
 #########################
+class GameNode:
+    """ Node within the game tree
+    """
+    def __init__(self, board, name):
+        self.name  = name  # String, the full move including the arrow move
+        self.board = copy.deepcopy(board)  # a copy of the board object, at this current state
+        self.children = []
+        # self.board_state = copy.deepcopy(board.config)
+        self.white_turn = board.bWhite
+
+        # if we are at the root node, don't go any further
+        # base case, for root node
+        if name is None:
+            return
+
+        # recursive case, for other nodes
+        # update board to include new move
+        #self.updateBoardWithMove()
+
+        # compute positional value of new board location
+        self.value = self.getValue()  # int, value of the position from this node's perspective
+        return
+
+    def addChildNode(self, node):
+        self.children.append(node)
+
+    # TODO: Once we can get some kind of value, build 1 ply of tree and just start playing
+    # TODO: with max of only 1 ply, because then at least we have **something**
+    def getValue(self):
+        # function to get the estimated value of a node, given current game position
+        # look at opponent's queens
+        # (so first need to find their locations using the functions already created)
+        # and that probably means making a new game object
+        # Then find how many adjacent spaces each queen has total... which is doable
+        # just need to call same functions as before and sum the values....
+        # that's a good value to start with
+
+        # take board... negate board.bWhite
+        # create a new Game object
+        # get queen locations
+        # get all moves for each queen
+        value = 0
+
+        (white_moves, black_moves) = self.updateBoardWithMove()
+        if self.white_turn:
+            value = white_moves
+        else:
+            value = black_moves
+
+        return value
+
+    def updateBoardWithMove(self):
+        """
+        The is node represents a new board state
+        The node's name has the moves we need
+        :return:
+        """
+        # undo what we did before and change to y, x...
+        # so we can manually add a 'q' and 'Q' and 'x'
+        # to the board state....
+        # change the board manually
+        # TODO: Check out what's already implemented in board and **USE IT**
+        # including count areas, etc...
+        # break for now....
+
+        # get the move as a string
+        move_str = self.getMove()
+        # map from str --> rc format
+        (src, dst) = map(self.ld2rc, move_str.split('-'))
+        # move the queen in our internal board object
+        self.board.move_queen(src, dst)
+
+        # get the arrow as a string
+        arrow_str = self.getArrow()
+        # map from str --> rc format
+        arr_dst = self.ld2rc(arrow_str)
+        # shoot the arrow in our internal board object
+        self.board.shoot_arrow(arr_dst)
+
+        # end the turn in our internal object
+        #(w, b) = self.board.end_turn()
+        (w,b) = self.board.count_areas()
+        return (w,b)
+
+
+    def getSrc(self):
+        # return None if we are at root
+        if self.name is None:
+            return None
+        # otherwise, return first 2 char
+        return self.name[0:2]
+
+    def getDst(self):
+        # return None if we are at root
+        if self.name is None:
+            return None
+        # otherwise, return chars 3 -> 4
+        return self.name[3:5]
+
+    def getMove(self):
+        # return None if we are at root
+        if self.name is None:
+            return None
+        # otherwise, return chars 0 -> 5
+        return self.name[0:5]
+
+    def getArrow(self):
+        # return None if we are at root
+        if self.name is None:
+            return None
+        # otherwise, return chars 6 -> end
+        return self.name[6:8]
+
+# utility functions:
+# ld2rc -- takes a string of the form, letter-digit (e.g., "a3")
+# and returns a tuple in (row, column): (3,0)
+# rc2ld -- takes a tuple of the form (row, column) -- e.g., (3,0)
+# and returns a string of the form, letter-digit (e.g., "a3")
+    def ld2rc(self, raw_loc):
+        return (int(raw_loc[1]), ord(raw_loc[0])-ord('a'))
+
+    def rc2ld(self, tup_loc):
+        return chr(tup_loc[1]+ord('a'))+str(tup_loc[0])
+
+
+
+
+
+class GameTree:
+    """ The Game tree from current position
+    """
+    def __init__(self, queen_moves, board):
+        self.root = GameNode(board, None)
+        self.board = board
+        self.move_list = queen_moves
+
+        # populate the tree
+        self.addAllMovesNextPly(queen_moves)
+
+        return
+
+    # [Queen Moves] --> [Nodes]
+    def addAllMovesNextPly(self, queen_moves):
+        for move_list in queen_moves:
+            node_list = self.queenMovesToNodes(move_list)
+
+            # add each child node to the root's list, this gives us ply 1
+            for node in node_list:
+                self.root.addChildNode(node)
+        return
+
+
+    # [ All moves per queen] --> [ Nodes ]
+    def queenMovesToNodes(self, move_list_per_queen):
+        node_list = []
+        # transform queen state indices to a string
+        queen_state_raw = move_list_per_queen[0]
+        queen_src = self.yx2boardInds(queen_state_raw)
+
+        # iterate through the moves list
+        for elem in move_list_per_queen[1]:
+            for move in elem:
+                # transform queen dst
+                queen_dst_raw = move[0]
+                queen_dst = self.yx2boardInds(queen_dst_raw)
+
+                # transform arrow dst
+                arrow_dst_raw = move[1]
+                arrow_dst = self.yx2boardInds(arrow_dst_raw)
+
+                # create the node
+                move_str = self.contstructMoveString(queen_src, queen_dst, arrow_dst)
+                node = GameNode(self.board, move_str)
+
+                # add that node to the node list
+                node_list.append(node)
+        return node_list
+
+    # transform indices to string that the game can take as input
+    def yx2boardInds(self, ind_tuple):
+        # get the values
+        col = ind_tuple[1]
+        row = ind_tuple[0]
+
+        # transform to ascii
+        col_ascii = 97 + col  # transform num --> lowercase ascii
+        col_ascii = chr(col_ascii)
+
+        # store as a string
+        location_str = ""
+        location_str = location_str + col_ascii + str(row)
+
+        # return that string
+        return location_str
+
+    def contstructMoveString(self, src, dst, arr):
+        seq = (src, dst, arr)
+        return "-".join(seq)
+
+
+
 
 class Game:
+    """
+    Object to encapsulate the WHOLE game we are playing
+    """
     def __init__(self, board):
         self.initial_state = None
         self.current_state = None
@@ -428,20 +633,58 @@ class Game:
 
         # THINK: later we can map the first location of over the future locations
         #        then same thing with arrow locations but
-
         return future_locations
 
     # [Queen Location, [All Locations]] -> [Queen Location, [(All Locations, Arrow Show)])
-    def getArrowLocations(self):
-        return None
+    def getArrowLocations(self, queen_and_its_moves):
+        """
+        :param queen_and_its_moves: Take a tuple of form:
+                ((y,x), [dst])
+        :return: [(dst), (arrow_location) ... ]
+                  Everything in form (y,x) coords
+        """
+        # get all the destinations in future locations
+        dst_and_arrow_list = []
+        #for elem in queen_and_its_moves:
+        dest_list = queen_and_its_moves[1]
+        # take each destination, and find all possible arrow locations
+        for dst in dest_list:
+            arrow_shots_list = self.getValidMoves(dst)
+            endpoints = itertools.repeat(dst, len(arrow_shots_list))
+            dst_and_arrow_tuple = zip(endpoints, arrow_shots_list)
+            dst_and_arrow_list.append(dst_and_arrow_tuple)
+
+        for elem in dst_and_arrow_list:
+            print "DST AND ARROW == " + str(elem)
+
+        # now, for each dst, all the arrow locations
+        # for elem
+        # index into elem[1], the tuple list of future moves,
+        # and find all future moves from THAT move
+        return dst_and_arrow_list
 
     # --> this is like concatting arrow locations with the dest locations
     # Queen Location (y,x) -> [(src_loc, dst_loc, arrow_loc)]
-    def getAllMovesForQueen(self):
+    def getAllMovesForQueens(self, future_locations):
+        queens_and_moves = []
+        for elem in future_locations:
+            dst_and_arrows = self.getArrowLocations(elem)
+            queens_and_moves.append((elem[0], dst_and_arrows))
+
+        """
+        # map(src, dst) --> and then for every element
+        for elem in future_locations:
+            start_list = itertools.repeat(elem[0], len(elem[1]))
+            dest_list = elem[1]
+            src_to_dst = zip(start_list, dest_list)
+            print "SRC->DST ="+str(src_to_dst)
+            queen_and_moves.append( (elem[0], src_to_dst) )
+        """
+
         # (y,x) -> [ Locations ] ... pull out each location
         # and for get all arrow locations for each
         # make a new tuple from the arrow locations.... and concat all those as well
-        return None
+        return queens_and_moves
 
     # Board -> [ All Queen Locations ]
     def getAllMovesPossible(self, location_tuple):
