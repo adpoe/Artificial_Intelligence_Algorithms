@@ -524,6 +524,12 @@ def adp59(board):
     values = {}
     for node in moveTree.root.children:
         values[node.name] = node.value
+
+    # if the values dict is empty, return false
+    # because that means we have no valid moves
+    if not values:
+        return False
+
     node_name = max(values.iterkeys(), key=(lambda key: values[key]))
 
     # change node name to tuple in form
