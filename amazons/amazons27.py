@@ -58,7 +58,7 @@
 
 ############################################
 
-import copy, random, re, time, sys
+import copy, random, re, time, sys, minimax
 
 # The Amazons class controls the flow of the game.
 # Its data include:
@@ -387,7 +387,115 @@ def human(board):
             return (src,dst,adst)
 
 ###################### Your code between these two comment lines ####################################
+def adp59(board):
+    # takes board state as an input arg
+    board.print_board()
 
+    # make a Game object so we can run our algorithms
+    game = minimax.Game(board)
+
+    # determine who's turn it is to play, and get the queen locations on the board for those
+    # Test Diags
+    queenLocations = game.getQueenLocations()
+    diags = queenLocations[0]
+    allDiags = game.getValidDiags(diags)
+
+    print "diags from " + str(diags)
+    for elem in allDiags:
+        print str(elem)
+
+    diags = queenLocations[1]
+    allDiags = game.getValidDiags(diags)
+    print "diags from " + str(diags)
+    for elem in allDiags:
+        print str(elem)
+    print "got queen diags"
+
+    # Test Verts
+    queenLocations = game.getQueenLocations()
+    verts = queenLocations[0]
+    allVerts = game.getValidVerts(verts)
+
+    print "verts from " + str(verts)
+    for elem in allVerts:
+        print str(elem)
+
+    verts = queenLocations[1]
+    allVerts = game.getValidVerts(verts)
+    print "verts from " + str(verts)
+    for elem in allVerts:
+        print str(elem)
+    print "got queen verts"
+
+    # Test Horzs
+    queenLocations = game.getQueenLocations()
+    horz = queenLocations[0]
+    allHorz = game.getValidHorz(horz)
+
+    print "horz from " + str(horz)
+    for elem in allHorz:
+        print str(elem)
+
+    horz = queenLocations[1]
+    allHorz = game.getValidHorz(horz)
+    print "horz from " + str(horz)
+    for elem in allHorz:
+        print str(elem)
+    print "got queen horz coords"
+
+    # get concat of all moves
+    moves = game.getValidMoves(queenLocations[0])
+    print 'got moves'
+
+
+    # Test Get Queen Future Moves List
+    allMoves = game.getAllFutureQueenLocations(queenLocations)
+    print "TEST --> ALL POSSIBLE QUEEN LOCATIONS"
+    for elem in allMoves:
+        print str(elem)
+
+    # Test Get All Possible  Arrow Moves from Each Queen Location
+
+
+
+    # get a list of move states for all queens in queenLocations
+    # ---> all move states == all diag, verts and horzs from each queen location that is valid on board
+
+    # get a list of possible arrow states for each move state
+
+    # combine all move states and arrow states into a set of successor states for each queen
+
+    # print the successor state list, ensure it looks okay
+
+    # make the successor states a game tree... that we can parse with minimax
+
+    # run minimax with heuristic and time limit for allotted time
+
+    # return best option
+
+
+    # returns a valid move in form of a tuple of 3 tuples
+    # 1. location of queen to be played
+    # 2. move-to location of the queen
+    # 3. landing site of the arrow
+    #       locations in (row, col) format
+    # (0,0) == bottom left corner
+    # Example move:  ((2,1), (5,1),(0,1))
+    # define additional functions and classes to support your auto player
+    # prefix each with user id
+    # basically, fix minimax from part 1, to generate successsor states,
+    # use a heuristic, etc...
+
+
+
+    #######################
+    #### API // ASSETS ####
+    #######################
+    # board.printBoard() --> void, print method
+    # board.bWhite --> boolan
+    # board.valid_path(src, dst)
+    # board.move_queen(src, dst)
+    return
 ###################### Your code between these two comment lines ####################################
         
 def main():

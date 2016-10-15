@@ -267,18 +267,22 @@ class GameTree:
 
 def main():
     filename = sys.argv[1]
-    print "hello world! " + filename
+    print "------- CS1571 - ASSIGNMENT #02 -----------"
+    print "@author - Anthony (Tony) Poerio"
+    print "@email adp59@pitt.edu"
+    print '  ##############################'
+    print '  ########## PART I ############'
+    print '  ##############################\n'
+    print "FILENAME: " + filename
     data_list = parse_data_as_list(filename)
     data_tree = GameTree()
     data_tree.build_tree(data_list)
-    print "build a tree.."
     print "\n\n----- MINIMAX SEARCH ------"
     minimax = MiniMax(data_tree)
     best_move = minimax.minimax(minimax.root)
     alphabeta = AlphaBeta(data_tree)
     print "\n\n----- ALPHA BETA PRUNING ------"
     best_move_ab = alphabeta.alpha_beta_search(alphabeta.root)
-    print "done"
 
 if __name__ == "__main__":
     main()
