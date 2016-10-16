@@ -27,11 +27,12 @@ class AlphaBeta:
                 best_val = value
                 best_state = state
         print "AlphaBeta:  Utility Value of Root Node: = " + str(best_val)
-        print "AlphaBeta:  Best State is: " + best_state.Name
+        if best_state is not None:
+            print "AlphaBeta:  Best State is: " + best_state.name
         return best_state
 
     def max_value(self, node, alpha, beta):
-        print "AlphaBeta-->MAX: Visited Node :: " + node.Name
+        print "AlphaBeta-->MAX: Visited Node :: " + node.name
         if self.isTerminal(node):
             return self.getUtility(node)
         infinity = float('inf')
@@ -46,7 +47,7 @@ class AlphaBeta:
         return value
 
     def min_value(self, node, alpha, beta):
-        print "AlphaBeta-->MIN: Visited Node :: " + node.Name
+        print "AlphaBeta-->MIN: Visited Node :: " + node.name
         if self.isTerminal(node):
             return self.getUtility(node)
         infinity = float('inf')
@@ -81,6 +82,16 @@ class AlphaBeta:
         return node.value
 
 
+###################################
+####### TIMED & CUTOFF AB #########
+###################################
+#TODO:  Forget this... it generally works.. cleanup and make sure works for both b/w
+#TODO:  use the newest version of the program that prof sent, cleaned version of player in there
+#TODO:  Get transcripts
+#TODO:  Write reports
+#TODO:  Turn in!
+# Probably need to add a parameter to GameNode --> player.
+# Heuristic... fewest adjacent squares around enemy queens
 
 
 #########################
@@ -106,36 +117,33 @@ class GameNode:
         #self.updateBoardWithMove()
 
         # compute positional value of new board location
-        self.value = self.getValue()  # int, value of the position from this node's perspective
+        self.black_moves = 0
+        self.white_moves = 0
+        (self.value, self.white_moves, self.black_moves) = self.getValue()
+        #(self.white_moves, self.black_moves) = self.getValue()  # int, value of the position from this node's perspective
         return
 
     def addChildNode(self, node):
         self.children.append(node)
 
-    # TODO: Once we can get some kind of value, build 1 ply of tree and just start playing
-    # TODO: with max of only 1 ply, because then at least we have **something**
     def getValue(self):
-        # function to get the estimated value of a node, given current game position
-        # look at opponent's queens
-        # (so first need to find their locations using the functions already created)
-        # and that probably means making a new game object
-        # Then find how many adjacent spaces each queen has total... which is doable
-        # just need to call same functions as before and sum the values....
-        # that's a good value to start with
-
-        # take board... negate board.bWhite
-        # create a new Game object
-        # get queen locations
-        # get all moves for each queen
         value = 0
 
+        # GOAL: of the game is to MINIMIZE opponent's moves
+        #       So, for now, always store white moves.
+        #       That way, I want to maximize this, and opponent wants to minimize it...
         (white_moves, black_moves) = self.updateBoardWithMove()
+
+        # maybe need to pass in which player we are? so we can max/min w/r/t to that pos
         if self.white_turn:
             value = white_moves
+            #value = black_moves
         else:
-            value = black_moves
+            value = white_moves
+            #value = black_moves
 
-        return value
+        return (value, white_moves, black_moves)
+
 
     def updateBoardWithMove(self):
         """
@@ -166,8 +174,9 @@ class GameNode:
         self.board.shoot_arrow(arr_dst)
 
         # end the turn in our internal object
-        #(w, b) = self.board.end_turn()
-        (w,b) = self.board.count_areas()
+        (w, b) = self.board.end_turn()
+        #(w,b) = self.board.count_areas()
+
         return (w,b)
 
 
@@ -222,19 +231,39 @@ class GameTree:
         self.board = board
         self.move_list = queen_moves
 
-        # populate the tree
-        self.addAllMovesNextPly(queen_moves)
+        # populate the tree -- ply 1
+        self.addAllMovesNextPly(queen_moves, self.root)
 
+        # populate ply2
+        # get all queen moves again
+        for node in self.root.children:
+            future_board = copy.deepcopy(node.board)
+            """
+            # interior calls rely on self.board... need to fix that.
+            # but checking for now if this works
+            """
+            self.board = future_board
+            game = Game(future_board)
+            # getAllMoves
+            queenLocations = game.getQueenLocations()
+            allMoves = game.getAllFutureQueenLocations(queenLocations)
+            next_queen_moves = game.getAllMovesForQueens(allMoves)
+            # add all the queens to all those nodes
+            self.addAllMovesNextPly(next_queen_moves, node)
+        """
+        # revert back to correct board for the root...
+        """
+        self.board = board
         return
 
     # [Queen Moves] --> [Nodes]
-    def addAllMovesNextPly(self, queen_moves):
+    def addAllMovesNextPly(self, queen_moves, root_node):
         for move_list in queen_moves:
             node_list = self.queenMovesToNodes(move_list)
 
             # add each child node to the root's list, this gives us ply 1
             for node in node_list:
-                self.root.addChildNode(node)
+                root_node.addChildNode(node)
         return
 
 
@@ -287,7 +316,6 @@ class GameTree:
 
 
 
-
 class Game:
     """
     Object to encapsulate the WHOLE game we are playing
@@ -306,22 +334,43 @@ class Game:
 
     def player(self, s):
         # given a state, determine current player
-        # MAX or MIN
-        return None
+        # accept a node --> return what player is up
+        if s.bWhite:
+            return 'w'
+        else:
+            return 'b'
 
-    def successors(self, s):
+    def successors(self, node):
         # Given a current state, return a list of successor states
-        return None
+        # accept a node --> return the child nodes of current node
+        #if len(s.children) > 0:
+        #    return s.children
+        #else:
+        #    # expand the node... wait on this one
+        return node.children
 
     def result(self, a, s):
-        #
+        # not sure if this is necessary....
         return None
 
     def terminal(self, s):
-        return None
+        # take in a node and count its areas
+        (w, b) = s.board.count_areas()
+        if w == 0 or b == 0:
+            return True
+        else:
+            return False
 
     def utility(self, s, p):
-        return None
+        # s=node
+        # p=char, for which player
+        # if white player, want to maximze white values
+        # need to think about this one... probably want something better
+        if p == 'w':
+            return s.white_moves
+        else:
+            return s.white_moves
+
 
     #                 #
     #     HELPERS     #
@@ -334,6 +383,9 @@ class Game:
     def getSuccessorsArrow(self):
         # pass in queen move and board, get all possible arrow shots
         return None
+
+    def setGameTree(self, tree):
+        self.game_tree = tree
 
     #                 #
     #   SUB HELPERS   #
@@ -654,8 +706,8 @@ class Game:
             dst_and_arrow_tuple = zip(endpoints, arrow_shots_list)
             dst_and_arrow_list.append(dst_and_arrow_tuple)
 
-        for elem in dst_and_arrow_list:
-            print "DST AND ARROW == " + str(elem)
+        #for elem in dst_and_arrow_list:
+        #    print "DST AND ARROW == " + str(elem)
 
         # now, for each dst, all the arrow locations
         # for elem

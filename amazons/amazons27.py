@@ -453,8 +453,8 @@ def adp59(board):
     # Test Get Queen Future Moves List
     allMoves = game.getAllFutureQueenLocations(queenLocations)
     print "TEST --> ALL POSSIBLE QUEEN LOCATIONS"
-    for elem in allMoves:
-        print str(elem)
+    #for elem in allMoves:
+    #    print str(elem)
 
     # Test Get All Possible  Arrow Moves from Each Queen Location
     print "TEST --> ALL QUEEN MOVES + ARROW LOCATIONS"
@@ -463,8 +463,8 @@ def adp59(board):
     # Test Get ALL MOVES for each queen in a data structure
     print "TEST --> ALL MOVES!!!"
     queen_moves = game.getAllMovesForQueens(allMoves)
-    for elem in queen_moves:
-        print str(elem)
+    #for elem in queen_moves:
+    #    print str(elem)
 
     # BUILD A TREE WE CAN SEARCH
     # THINK --> For minimax, easiest to work on pure values...
@@ -481,8 +481,13 @@ def adp59(board):
     #                 everything 3 levels down into the queen_moves list
     #                 ALSO Save board.config as a field in the tree node
 
+
+    #TODO: Pass in what player we are --> that's the player we want to maximize for
+    #TODO: Go into the code and make sure we pass that value into all nodes
+    #TODO: make sure that this value dictates what we store as value, so that player works for b or w
     moveTree = minimax.GameTree(queen_moves, board)
     print "made tree!"
+    game.setGameTree(moveTree)
 
     # get a list of move states for all queens in queenLocations
     # ---> all move states == all diag, verts and horzs from each queen location that is valid on board
@@ -512,6 +517,14 @@ def adp59(board):
     # basically, fix minimax from part 1, to generate successsor states,
     # use a heuristic, etc...
 
+    # TRY THE ALPHABETA SEARCH AS-IS
+    search = minimax.AlphaBeta(moveTree)
+    best_state = search.alpha_beta_search(moveTree.root)
+    print "got best state"
+    if best_state is None:
+        return False
+    else:
+        return map(ld2rc, best_state.name.split('-'))
 
 
     #######################
@@ -530,6 +543,8 @@ def adp59(board):
     if not values:
         return False
 
+    #node_name = min(values.iterkeys(), key=(lambda key: values[key]))
+    # other option:  use my color moves and try to max
     node_name = max(values.iterkeys(), key=(lambda key: values[key]))
 
     # change node name to tuple in form
