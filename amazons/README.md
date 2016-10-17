@@ -90,8 +90,7 @@ c0 a2
 
 
 ### Notes
-I have a series of .config files that I used to test the program, feel free to use them. In practice, using more than 3 queens on a 7x7 board will take to long to be practical for this program  
-A future goal would be to optimize for speed on large boards, but it works as expected on a smaller input size
+I have a series of .config files that I used to test the program, feel free to use them. In practice, using more than 3 queens on a 7x7 board will take to long to be practical for this program. A future goal would be to optimize for speed on large boards, but it works as expected on a smaller input size
 
 ### Architecture
 Just like part 1, this program works by:
