@@ -73,21 +73,21 @@ To run the program, simply:
 `python amazons27v3.py`
 * Type in the name of the .config file you intend to use, when prompted.
 * .config files MUST be in the following format:
-[line 1 - seconds for the autoplayer to make its decision]
-[line 2 - size of the board]
-[line 3 - player 1]
-[line 4 - locations of player 1's queens]
-[line 5 - player 2]
-[line 6 - locations of player 2's queens]
+[line 1 - seconds for the autoplayer to make its decision]  
+[line 2 - size of the board]  
+[line 3 - player 1]  
+[line 4 - locations of player 1's queens]  
+[line 5 - player 2]  
+[line 6 - locations of player 2's queens]  
 
 * Here's an example for a 5x5 board.
 
->> 15
->> 5
->> human
->> c4 e2
->> adp59
->> c0 a2
+15  
+5  
+human  
+c4 e2  
+adp59  
+c0 a2  
 
 
 ### Notes
