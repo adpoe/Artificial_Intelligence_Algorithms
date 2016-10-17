@@ -90,12 +90,11 @@ c0 a2
 
 
 ### Notes
-* I have a series of .config files that I used to test the program, feel free to use them.
-* In practice, using more than 3 queens on a 7x7 board will take to long to be practical for this program
-* A future goal would be to optimize for speed on large boards, but it works as expected on a smaller input size
+I have a series of .config files that I used to test the program, feel free to use them. In practice, using more than 3 queens on a 7x7 board will take to long to be practical for this program  
+A future goal would be to optimize for speed on large boards, but it works as expected on a smaller input size
 
 ### Architecture
-* Just like part 1, this program works by:
+Just like part 1, this program works by:
 * Taking in the board position
 * Finding locations of all queens
 * Finding all possible moves they can make
@@ -105,7 +104,9 @@ c0 a2
 * Making the optimal move
 
 ### Value Function
-* For the value function, I decided optimize and always pick the move which results in the HIGHEST NUMBER of Available spaces for the autoplayer.
+For the value function, I decided optimize and always pick the move which results in the HIGHEST NUMBER of Available spaces for the autoplayer.
+
+Notes:
 * I also tried to minimize the opponent's spaces, but this caused the player to be too aggressive and make more dumb moves.
 * The current version plays defensively, and against a human who is aggressive, it will usually lose -- but against another autoplayer, I'd expect it to perform relatively well. It plays with its own best interest in mind.
 * The value function heuristic can be be altered in the **GameNode class** within the @getValue function of 'adp59_minimax.py'
