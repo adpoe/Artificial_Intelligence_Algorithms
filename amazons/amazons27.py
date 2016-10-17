@@ -58,7 +58,7 @@
 
 ############################################
 
-import copy, random, re, time, sys, minimax
+import copy, random, re, time, sys, adp59_minimax
 
 # The Amazons class controls the flow of the game.
 # Its data include:
@@ -394,7 +394,7 @@ def adp59(board):
     board.print_board()
 
     # make a Game object so we can run our algorithms
-    game = minimax.Game(board)
+    game = adp59_minimax.Game(board)
 
     # determine who's turn it is to play, and get the queen locations on the board for those
     # Test Diags
@@ -485,7 +485,8 @@ def adp59(board):
     #TODO: Pass in what player we are --> that's the player we want to maximize for
     #TODO: Go into the code and make sure we pass that value into all nodes
     #TODO: make sure that this value dictates what we store as value, so that player works for b or w
-    moveTree = minimax.GameTree(queen_moves, board)
+    playerWhite = board.bWhite # <-- pass this in next
+    moveTree = adp59_minimax.GameTree(queen_moves, board, playerWhite)
     print "made tree!"
     game.setGameTree(moveTree)
 
@@ -518,7 +519,7 @@ def adp59(board):
     # use a heuristic, etc...
 
     # TRY THE ALPHABETA SEARCH AS-IS
-    search = minimax.AlphaBeta(moveTree)
+    search = adp59_minimax.AlphaBeta(moveTree)
     best_state = search.alpha_beta_search(moveTree.root)
     print "got best state"
     if best_state is None:

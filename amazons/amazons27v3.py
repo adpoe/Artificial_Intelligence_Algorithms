@@ -58,7 +58,7 @@
 
 ############################################
 
-import copy, random, re, time, sys
+import copy, random, re, time, sys, adp59_minimax
 
 # The Amazons class controls the flow of the game.
 # Its data include:
@@ -392,6 +392,43 @@ def human(board):
             return (src,dst,adst)
 
 ###################### Your code between these two comment lines ####################################
+def adp59(board):
+    # takes board state as an input arg
+    board.print_board()
+
+    # make a Game object so we can run our algorithms
+    game = adp59_minimax.Game(board)
+
+    # get the queen locations on the board itself
+    queenLocations = game.getQueenLocations()
+
+    # get all possible places that this set of queens can move to
+    allMoves = game.getAllFutureQueenLocations(queenLocations)
+
+    # get every possible moves, including arrow shots
+    queen_moves = game.getAllMovesForQueens(allMoves)
+
+    # check which color we are playing
+    playerWhite = board.bWhite
+
+    # create a game tree given our current move set
+    moveTree = adp59_minimax.GameTree(queen_moves, board, playerWhite)
+
+    # set the game tree in our game object, so we can run search on it
+    game.setGameTree(moveTree)
+
+    # run an ALPHA-BETA MINIMAX search on the tree we've just created
+    search = adp59_minimax.AlphaBeta(moveTree)
+
+    # and find the best state from that search
+    best_state = search.alpha_beta_search(moveTree.root)
+
+    # if we have no best state, we have no valid moves, so return false
+    if best_state is None:
+        return False
+    # otherwise, return our move
+    else:
+        return map(ld2rc, best_state.name.split('-'))
 
 ###################### Your code between these two comment lines ####################################
         
