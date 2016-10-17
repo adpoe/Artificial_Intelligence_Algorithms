@@ -82,12 +82,12 @@ To run the program, simply:
 
 * Here's an example for a 5x5 board.
 `
-15
-5
-human
-c4 e2
-adp59
-c0 a2
+> 15
+> 5
+> human
+> c4 e2
+> adp59
+> c0 a2
 `
 
 ### Notes
