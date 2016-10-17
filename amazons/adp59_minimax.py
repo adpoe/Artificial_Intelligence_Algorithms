@@ -26,13 +26,13 @@ class AlphaBeta:
             if value > best_val:
                 best_val = value
                 best_state = state
-        print "AlphaBeta:  Utility Value of Root Node: = " + str(best_val)
+        #print "AlphaBeta:  Utility Value of Root Node: = " + str(best_val)
         if best_state is not None:
             print "AlphaBeta:  Best State is: " + best_state.name
         return best_state
 
     def max_value(self, node, alpha, beta):
-        print "AlphaBeta-->MAX: Visited Node :: " + node.name
+        #print "AlphaBeta-->MAX: Visited Node :: " + node.name
         if self.isTerminal(node):
             return self.getUtility(node)
         infinity = float('inf')
@@ -47,7 +47,7 @@ class AlphaBeta:
         return value
 
     def min_value(self, node, alpha, beta):
-        print "AlphaBeta-->MIN: Visited Node :: " + node.name
+        #print "AlphaBeta-->MIN: Visited Node :: " + node.name
         if self.isTerminal(node):
             return self.getUtility(node)
         infinity = float('inf')
@@ -80,18 +80,6 @@ class AlphaBeta:
     def getUtility(self, node):
         assert node is not None
         return node.value
-
-
-###################################
-####### TIMED & CUTOFF AB #########
-###################################
-#TODO:  Forget this... it generally works.. cleanup and make sure works for both b/w
-#TODO:  use the newest version of the program that prof sent, cleaned version of player in there
-#TODO:  Get transcripts
-#TODO:  Write reports
-#TODO:  Turn in!
-# Probably need to add a parameter to GameNode --> player.
-# Heuristic... fewest adjacent squares around enemy queens
 
 
 #########################
@@ -150,14 +138,6 @@ class GameNode:
         The node's name has the moves we need
         :return:
         """
-        # undo what we did before and change to y, x...
-        # so we can manually add a 'q' and 'Q' and 'x'
-        # to the board state....
-        # change the board manually
-        # TODO: Check out what's already implemented in board and **USE IT**
-        # including count areas, etc...
-        # break for now....
-
         # get the move as a string
         move_str = self.getMove()
         # map from str --> rc format
@@ -723,16 +703,6 @@ class Game:
             dst_and_arrows = self.getArrowLocations(elem)
             queens_and_moves.append((elem[0], dst_and_arrows))
 
-        """
-        # map(src, dst) --> and then for every element
-        for elem in future_locations:
-            start_list = itertools.repeat(elem[0], len(elem[1]))
-            dest_list = elem[1]
-            src_to_dst = zip(start_list, dest_list)
-            print "SRC->DST ="+str(src_to_dst)
-            queen_and_moves.append( (elem[0], src_to_dst) )
-        """
-
         # (y,x) -> [ Locations ] ... pull out each location
         # and for get all arrow locations for each
         # make a new tuple from the arrow locations.... and concat all those as well
@@ -743,10 +713,3 @@ class Game:
         # get location moves, and for each, get the arrow move
         # put the arrow move in the last elem of location move
         return None
-
-    def BuildMoveTree(self):
-        # build one level of tree.
-        return
-
-    def AddTreeLevel(self):
-        return
