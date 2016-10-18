@@ -323,16 +323,12 @@ class Game:
         self.game_tree = None
         self.game_board = board.config
         self.board = board
-        # player(s) --> who's the player in the state
-        # successors(s) --> possible moves from current state
-        # result(a,s) --> the resulting state after action (a) is taken on state (s)
-        # terminal(s) --> returns true if state is a terminal state
-        # utility(s,p) --> the value function of state (s) for player (p)
 
-    def player(self, s):
+
+    def player(self, node):
         # given a state, determine current player
         # accept a node --> return what player is up
-        if s.bWhite:
+        if node.bWhite:
             return 'w'
         else:
             return 'b'
@@ -346,47 +342,31 @@ class Game:
         #    # expand the node... wait on this one
         return node.children
 
-    def result(self, a, s):
-        # not sure if this is necessary....
-        return None
-
-    def terminal(self, s):
+    def terminal(self, node):
         # take in a node and count its areas
-        (w, b) = s.board.count_areas()
+        (w, b) = node.board.count_areas()
         if w == 0 or b == 0:
             return True
         else:
             return False
 
-    def utility(self, s, p):
+    def utility(self, node, player):
         # s=node
         # p=char, for which player
         # if white player, want to maximze white values
         # need to think about this one... probably want something better
-        if p == 'w':
-            return s.white_moves
+        if player == 'w':
+            return node.white_moves
         else:
-            return s.white_moves
+            return node.white_moves
 
 
     #                 #
     #     HELPERS     #
     #                 #
-    def getSuccessorsBoard(self):
-        # pass in board, get all possible queen moves for this turn...
-        # every queen across every row, col, and diagonal.... so lots
-        return None
-
-    def getSuccessorsArrow(self):
-        # pass in queen move and board, get all possible arrow shots
-        return None
-
     def setGameTree(self, tree):
         self.game_tree = tree
 
-    #                 #
-    #   SUB HELPERS   #
-    #                 #
     def getQueenLocations(self):
         # get locations of all the queens
         # return  a list with locations in tuples, (y,x)
@@ -724,9 +704,3 @@ class Game:
         # and for get all arrow locations for each
         # make a new tuple from the arrow locations.... and concat all those as well
         return queens_and_moves
-
-    # Board -> [ All Queen Locations ]
-    def getAllMovesPossible(self, location_tuple):
-        # get location moves, and for each, get the arrow move
-        # put the arrow move in the last elem of location move
-        return None
