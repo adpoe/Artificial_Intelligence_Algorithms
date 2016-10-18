@@ -123,11 +123,28 @@ class GameNode:
         #       That way, I want to maximize this, and opponent wants to minimize it...
         (white_moves, black_moves) = self.updateBoardWithMove()
 
+        ###########################
+        #### DEFENSIVE PLAYER #####
+        ###########################
+        # Maximize YOUR free spaces
         # Store values w/r/t which player we are
         if self.playerWhite:
             value = white_moves
         else:
             value = black_moves
+
+        ###########################
+        #### OFFENSIVE PLAYER #####
+        ###########################
+        """
+        >>> Uncomment to play offensively
+        # Minimize OPPONENT'S free spaces
+        # Store values w/r/t which player we are
+        if self.playerWhite:
+            value = -black_moves
+        else:
+            value = -white_moves
+        """
 
         return (value, white_moves, black_moves)
 
