@@ -333,34 +333,6 @@ class Game:
         else:
             return 'b'
 
-    def successors(self, node):
-        # Given a current state, return a list of successor states
-        # accept a node --> return the child nodes of current node
-        #if len(s.children) > 0:
-        #    return s.children
-        #else:
-        #    # expand the node... wait on this one
-        return node.children
-
-    def terminal(self, node):
-        # take in a node and count its areas
-        (w, b) = node.board.count_areas()
-        if w == 0 or b == 0:
-            return True
-        else:
-            return False
-
-    def utility(self, node, player):
-        # s=node
-        # p=char, for which player
-        # if white player, want to maximze white values
-        # need to think about this one... probably want something better
-        if player == 'w':
-            return node.white_moves
-        else:
-            return node.white_moves
-
-
     #                 #
     #     HELPERS     #
     #                 #
