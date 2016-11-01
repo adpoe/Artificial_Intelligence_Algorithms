@@ -1,0 +1,50 @@
+# Flappy Bird - QLearning
+* @author Anthony (Tony) Poerio
+* University of Pittsburgh
+* CS1571 - Artificial Intelligence
+* Prof. Rebecca Hwa
+* Fall 2016
+* Homework #03
+
+## Overview
+This project contains the implementation of a Q-Learning Artificial Intelligence for learning to play the popular video game **Flappy Bird**.
+
+The project folder is divided into two sections:
+* The original game (unmodified, and made by @TimoWilken)
+* My modified game which contains an AI-Agent made to learn and play Flappy Bird automatically
+
+### Source Code
+The source code for my AI contained in the folder named 'updated_game'
+
+### Running the program
+To use my smart bird, simply take the following steps:
+1.	cd into a directory containing my source code
+2.	Ensure that this directory includes the file named ‘qdata.txt’ 
+3.	Run the command:  
+`python flappybird.py "qdata.txt"`
+4.	Watch Flappy crush it.  (the game will run 10x)
+
+### Report
+The report for this section is found starting on the **first page** of the document located at:
+`/ADP59-CS1571-HW03-REPORT.pdf`
+
+### Version
+This source code is written using python version 2.7.8
+
+--
+
+## Prerequisities
+This project depends upon Python v. 2.7.8
+
+I am also using the **itertools** python library
+
+You must also have the config files you intend to read from in the same directory as the source code
+
+## Built With
+* Python v. 2.7.8
+* PyCharm
+
+## Acknowledgments
+* Project done for Rebecca Hwa's Artificial Intelligence class at the University of Pittsburgh
+* Implemantation ideas from: http://sarvagyavaish.github.io/FlappyBirdRL/ 
+* Also consulted: http://mnemstudio.org/path-finding-q-learning-tutorial.htm 
