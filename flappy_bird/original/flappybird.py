@@ -2,7 +2,6 @@
 
 """Flappy Bird, implemented using Pygame."""
 
-
 import math
 import os
 from random import randint
@@ -12,19 +11,11 @@ import pygame
 from pygame.locals import *
 
 
-FPS = 60   # this was initial setting
-#FPS = 30
+FPS = 60
 ANIMATION_SPEED = 0.18  # pixels per millisecond
 WIN_WIDTH = 284 * 2     # BG image size: 284x512 px; tiled twice
 WIN_HEIGHT = 512
 
-
-# Okay --> we need import some kind of decision making process into the bird itself
-#          Change main so that it runs repeatedly... and builds on the Q-Learning info
-# my imports
-import random
-import QLearn
-import agent
 
 class Bird(pygame.sprite.Sprite):
     """Represents the bird controlled by the player.
@@ -312,7 +303,7 @@ def msec_to_frames(milliseconds, fps=FPS):
     return fps * milliseconds / 1000.0
 
 
-def run_episode(QLearningAgent):
+def main():
     """The application's entry point.
 
     If someone executes this module (instead of importing it, for
@@ -338,10 +329,6 @@ def run_episode(QLearningAgent):
     frame_clock = 0  # this counter is only incremented if the game isn't paused
     score = 0
     done = paused = False
-
-    """ GIVE AGENT NECESSARY DATA STRUCTURES """
-    QLearningAgent.newEpisode(bird, pipes)
-
     while not done:
         clock.tick(FPS)
 
@@ -350,28 +337,6 @@ def run_episode(QLearningAgent):
         if not (paused or frame_clock % msec_to_frames(PipePair.ADD_INTERVAL)):
             pp = PipePair(images['pipe-end'], images['pipe-body'])
             pipes.append(pp)
-
-
-        """
-            Query the agent here...
-            Evaluate the Bird's positions, what we know from Q-Learning,
-            And then decide if we do nothing, or take action
-            bird.msec_to_climb = Bird.CLIMB_DURATION
-        """
-
-
-        # only make a choice if we are not already in the middle of a jump
-        if bird.msec_to_climb < 0:  # ---> this as a command line option... doublejump=true or false
-            QLearningAgent.newIteration()
-            action, prev_state = QLearningAgent.stepAndMakeChoice()
-            if action == 'J':
-                pygame.event.post(pygame.event.Event(MOUSEBUTTONUP))
-            # okay, so options are --> no action, or MOUSTBUTTONUP... and we can evaluate all states
-            # at this time...
-            #choice = random.randint(0, 99)
-            #if choice <= 2:
-            #    pygame.event.post(pygame.event.Event(MOUSEBUTTONUP))
-
 
         for e in pygame.event.get():
             if e.type == QUIT or (e.type == KEYUP and e.key == K_ESCAPE):
@@ -386,58 +351,10 @@ def run_episode(QLearningAgent):
         if paused:
             continue  # don't draw anything
 
-        """
-        #  get info here --> and calculate reward after we check for collision....
-        bird_height = bird.y
-        pipe_bottom = 500 - pp.bottom_height_px
-        pipe_dist = pp.x
-
-        # first value in state tuple
-        height_category = 0
-        dist_to_pipe_bottom = pipe_bottom - bird.y
-        if dist_to_pipe_bottom < 100:
-            height_category = 0
-        elif dist_to_pipe_bottom < 200:
-            height_category = 1
-        else:
-            height_category = 2
-
-        # second value in state tuple
-        dist_category = 0
-        dist_to_pipe_horz = pp.x - bird.x
-        if dist_to_pipe_horz < 100:
-            dist_category = 0
-        elif dist_to_pipe_horz < 200:
-            dist_category = 1
-        else:
-            dist_category = 2
-    # state space = (bird_height, pipe_bottom_y, pipe_collision)
-    # reward = if no collision +1, if collision -1000
-    #
-    # THINK:
-    #   * bird height - pipe_bottom_y can discretized into 3 buckets
-    #       0 = close  ( y < 100 )
-    #       1 = mid    ( 100 < y < 200 )
-    #       2 = far    ( 200 < y )
-    #   * same thing for pipe dist
-    #       0 = close  ( x < 100 )
-    #       1 = mid    ( 100 < x < 200 )
-    #       2 = far    ( 200 < x )
-    """
-
-        # make this a function (getState(bird, pipe) -> pass in bird and pipe
         # check for collisions
         pipe_collision = any(p.collides_with(bird) for p in pipes)
-        """ insert agent here -->  collect result here?"""
-        # state space = (bird_height, pipe_bottom_y, pipe_dist, pipe_collision)
-        #collision = pipe_collision
-        #print "PREV STATE=" + str(prev_state)
-
-        #state = (height_category, dist_category, collision)
-        """ end agent """
         if pipe_collision or 0 >= bird.y or bird.y >= WIN_HEIGHT - Bird.HEIGHT:
             done = True
-            QLearningAgent.learnFromChoice(action, prev_state, done)
 
         for x in (0, WIN_WIDTH / 2):
             display_surface.blit(images['background'], (x, 0))
@@ -467,22 +384,6 @@ def run_episode(QLearningAgent):
     print('Game over! Score: %i' % score)
     pygame.quit()
 
-
-# build an agent and run repeatedly, passing our agent to each version of the game
-def main():
-    # take optional .txt file as arg
-    # take optional seed value
-
-    #QLearnAgent = agent.QLearningAgent("qdata.txt")
-    QLearnAgent = agent.QLearningAgent()
-    i=0
-    while i < 100:
-        run_episode(QLearnAgent)
-        i += 1
-        print str(QLearnAgent.q_data)
-    print str(QLearnAgent.q_data)
-    QLearnAgent.saveStrategy("qdata.txt")
-    return
 
 if __name__ == '__main__':
     # If this module had been imported, __name__ would be 'flappybird'.

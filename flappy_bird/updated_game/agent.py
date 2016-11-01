@@ -34,12 +34,6 @@ import copy
 # more time complexity. AND more space complexity.
 # so a very distinct tradeoff
 
-# MDP
-# Need MDP to get the information and rewards out to states earlier in process
-# Feel like we need to keep a list of the last 5-10 states or so
-# and and rewards to them based on the conditional probs...
-# maybe last 5, then 10... and do 1/# ... descending returns back to older
-# states in the list....
 
 class QLearningAgent:
     # state space = (bird_height, pipe_bottom_y, pipe_dist, pipe_collision)
@@ -115,15 +109,23 @@ class QLearningAgent:
         self.gamma = 0.7
 
         #Alpha should be different depending on whether we load or start from scratch
-        # alpha = "learning rate"
-        self.alpha = lambda n: 1./(1+n)
+        # alpha = "learning rate", also used for 'explore' function
+        if saved_strategy is None:
+            self.alpha = lambda n: 1./(1+n)
+        else:
+            self.alpha = lambda n: 1./(100+n)
 
         # N-Array --> n(s,a)
         # Keeps track of how many times we've been in state s, performing action a
         self.n_data = copy.deepcopy(self.q_data)
-        # avoid division by zero error
-        for k in self.n_data.iterkeys():
-             self.n_data[k] = 1.0
+
+        if saved_strategy is None:
+            # avoid division by zero error
+             for k in self.n_data.iterkeys():
+                self.n_data[k] = 1.0
+        else:
+            for k in self.n_data.iterkeys():
+                self.n_data[k] = 250.0
 
 
         # path
@@ -173,7 +175,7 @@ class QLearningAgent:
         dist_to_pipe_bottom = pipe_bottom - bird.y
         if dist_to_pipe_bottom < 8:
             height_category = 0
-        elif dist_to_pipe_bottom < 25:
+        elif dist_to_pipe_bottom < 20:
             height_category = 1
         elif dist_to_pipe_bottom < 125:
             height_category = 2
@@ -187,7 +189,7 @@ class QLearningAgent:
         dist_to_pipe_horz = pp.x - bird.x
         if dist_to_pipe_horz < 8:  # works:  100
             dist_category = 0
-        elif dist_to_pipe_horz < 25: # works: 200
+        elif dist_to_pipe_horz < 20: # works: 200
             dist_category = 1
         elif dist_to_pipe_horz < 125: # works: 200
             dist_category = 2
