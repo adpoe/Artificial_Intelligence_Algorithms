@@ -46,5 +46,5 @@ You must also have the config files you intend to read from in the same director
 
 ## Acknowledgments
 * Project done for Rebecca Hwa's Artificial Intelligence class at the University of Pittsburgh
-* Implemantation ideas from: http://sarvagyavaish.github.io/FlappyBirdRL/ 
+* Implementation ideas from: http://sarvagyavaish.github.io/FlappyBirdRL/ 
 * Also consulted: http://mnemstudio.org/path-finding-q-learning-tutorial.htm 
