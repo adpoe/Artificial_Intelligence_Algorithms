@@ -18,11 +18,11 @@ The source code for my AI contained in the folder named 'updated_game'
 
 ### Running the program
 To use my smart bird, simply take the following steps:
-1.	cd into a directory containing my source code
-2.	Ensure that this directory includes the file named ‘qdata.txt’ 
-3.	Run the command:  
+* cd into a directory containing my source code
+* Ensure that this directory includes the file named ‘qdata.txt’ 
+* Run the command:  
 `python flappybird.py "qdata.txt"`
-4.	Watch Flappy crush it.  (the game will run 10x)
+* Watch Flappy crush it.  (the game will run 10x)
 
 ### Report
 The report for this section is found starting on the **first page** of the document located at:
