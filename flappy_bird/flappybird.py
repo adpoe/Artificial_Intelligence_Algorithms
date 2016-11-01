@@ -2,6 +2,7 @@
 
 """Flappy Bird, implemented using Pygame."""
 
+
 import math
 import os
 from random import randint
@@ -11,8 +12,8 @@ import pygame
 from pygame.locals import *
 
 
-#FPS = 60   # this was initial setting
-FPS = 30
+FPS = 60   # this was initial setting
+#FPS = 30
 ANIMATION_SPEED = 0.18  # pixels per millisecond
 WIN_WIDTH = 284 * 2     # BG image size: 284x512 px; tiled twice
 WIN_HEIGHT = 512
@@ -357,15 +358,19 @@ def run_episode(QLearningAgent):
             And then decide if we do nothing, or take action
             bird.msec_to_climb = Bird.CLIMB_DURATION
         """
+
+
+        # only make a choice if we are not already in the middle of a jump
+        #if bird.msec_to_climb < 0:  # ---> this as a command line option... doublejump=true or false
         QLearningAgent.newIteration()
         action, prev_state = QLearningAgent.stepAndMakeChoice()
         if action == 'J':
             pygame.event.post(pygame.event.Event(MOUSEBUTTONUP))
-        # okay, so options are --> no action, or MOUSTBUTTONUP... and we can evaluate all states
-        # at this time...
-        #choice = random.randint(0, 99)
-        #if choice <= 2:
-        #    pygame.event.post(pygame.event.Event(MOUSEBUTTONUP))
+            # okay, so options are --> no action, or MOUSTBUTTONUP... and we can evaluate all states
+            # at this time...
+            #choice = random.randint(0, 99)
+            #if choice <= 2:
+            #    pygame.event.post(pygame.event.Event(MOUSEBUTTONUP))
 
 
         for e in pygame.event.get():
@@ -465,9 +470,13 @@ def run_episode(QLearningAgent):
 
 # build an agent and run repeatedly, passing our agent to each version of the game
 def main():
-    QLearnAgent = agent.QLearningAgent("qdata.txt")
+    # take optional .txt file as arg
+    # take optional seed value
+
+    #QLearnAgent = agent.QLearningAgent("qdata.txt")
+    QLearnAgent = agent.QLearningAgent()
     i=0
-    while i < 10:
+    while i < 100:
         run_episode(QLearnAgent)
         i += 1
         print str(QLearnAgent.q_data)
