@@ -465,13 +465,14 @@ def run_episode(QLearningAgent):
 
 # build an agent and run repeatedly, passing our agent to each version of the game
 def main():
-    QLearnAgent = agent.QLearningAgent()
+    QLearnAgent = agent.QLearningAgent("qdata.txt")
     i=0
-    while i < 1000:
+    while i < 10:
         run_episode(QLearnAgent)
         i += 1
         print str(QLearnAgent.q_data)
     print str(QLearnAgent.q_data)
+    QLearnAgent.saveStrategy("qdata.txt")
     return
 
 if __name__ == '__main__':

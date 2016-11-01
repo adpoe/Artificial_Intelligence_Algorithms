@@ -1,9 +1,7 @@
-from collections import defaultdict
-import markov_decision_process as mdp
 import random
 import itertools
+import ast
 
-# TODO: Implement save and reload functions
 # TODO: Implement Exploration function
 
 class QLearningAgent:
@@ -40,8 +38,12 @@ class QLearningAgent:
     #       STATE_ACTION_PAIRS = state_action_pairs = list(itertools.product(nodes, ('S', 'J')))
 
 
-    def __init__(self):
-        """,mdp, bird, pipes, pp"""
+    def __init__(self, saved_strategy=None):
+        """
+        Pass in file name of saved strategy, if we have one
+        :param saved_strategy:
+        :return:
+        """
         # need to set these each new episode
         self.bird = None #bird   # set=bird
         self.pipes = None #pipes  # set=pipes
@@ -54,16 +56,25 @@ class QLearningAgent:
         self.t = 0
 
         # Q-ARRAY
+        # load a saved strategy if we have one
+        # pass in the file name
         self.q_data = {}
-        s_a_pairs = self.generateStates() # get all state/action pairs
-        # turn them all into strings and initialize our dictionary with them
-        for elem in s_a_pairs:
-            key = str(elem)
-            self.q_data[key] = 0.0
+        if saved_strategy is None:
+            s_a_pairs = self.generateStates() # get all state/action pairs
+            # turn them all into strings and initialize our dictionary with them
+            for elem in s_a_pairs:
+                key = str(elem)
+                self.q_data[key] = 0.0
+        else:
+            with open(saved_strategy, 'r') as f:
+                data_string = f.read()
+                data_dict = ast.literal_eval(data_string)
+                self.q_data = data_dict
 
         # agent-specific values
         self.gamma = 0.7
         """
+        Alpha should be different depending on whether we load or start from scratch
         self.alpha = lambda n: 1./(1+n)
         """
         return
@@ -145,6 +156,17 @@ class QLearningAgent:
         # set current state to s'
         self.current_state = self.observeState(self.bird, self.pipes, self.pp)
         return
+
+    def saveStrategy(self, fname):
+        """
+        Save the q_data dictionary, so we can load it back in later
+        and keep learning more
+        :param fname:
+        :return:
+        """
+        f = open(fname, "w")
+        f.write(str(self.q_data))
+        f.close()
 
     # and repeat the loop!
 
