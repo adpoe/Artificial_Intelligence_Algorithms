@@ -134,7 +134,8 @@ class QLearningAgent:
         """
         :return: Returns a list containing all discretized states for Flappy Bird proble
         """
-        nodes = list(itertools.product( (0,1,2) , repeat=2))
+        #nodes = list(itertools.product( (0,1,2) , repeat=2))  # OLD / SAFE
+        nodes = list(itertools.product( (0,1,2,3, 4) , repeat=2))
         STATE_ACTION_PAIRS = state_action_pairs = list(itertools.product(nodes, ('S', 'J')))
         return state_action_pairs
 
@@ -145,7 +146,7 @@ class QLearningAgent:
         bird_height = bird.y
         pipe_bottom = 500 - pp.bottom_height_px
         pipe_dist = pp.x
-
+        """ OLD / SAFE
         # first value in state tuple
         height_category = 0
         dist_to_pipe_bottom = pipe_bottom - bird.y
@@ -165,6 +166,35 @@ class QLearningAgent:
             dist_category = 1
         else:
             dist_category = 2
+        """
+
+                # first value in state tuple
+        height_category = 0
+        dist_to_pipe_bottom = pipe_bottom - bird.y
+        if dist_to_pipe_bottom < 8:
+            height_category = 0
+        elif dist_to_pipe_bottom < 25:
+            height_category = 1
+        elif dist_to_pipe_bottom < 125:
+            height_category = 2
+        elif dist_to_pipe_bottom < 250:
+            height_category = 3
+        else:
+            height_category = 4
+
+        # second value in state tuple
+        dist_category = 0
+        dist_to_pipe_horz = pp.x - bird.x
+        if dist_to_pipe_horz < 8:  # works:  100
+            dist_category = 0
+        elif dist_to_pipe_horz < 25: # works: 200
+            dist_category = 1
+        elif dist_to_pipe_horz < 125: # works: 200
+            dist_category = 2
+        elif dist_to_pipe_horz < 250: # works: 200
+            dist_category = 3
+        else:
+            dist_category = 4
 
         # check for collision
         pipe_collision = any(p.collides_with(bird) for p in pipes)

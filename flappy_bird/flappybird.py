@@ -361,11 +361,11 @@ def run_episode(QLearningAgent):
 
 
         # only make a choice if we are not already in the middle of a jump
-        #if bird.msec_to_climb < 0:  # ---> this as a command line option... doublejump=true or false
-        QLearningAgent.newIteration()
-        action, prev_state = QLearningAgent.stepAndMakeChoice()
-        if action == 'J':
-            pygame.event.post(pygame.event.Event(MOUSEBUTTONUP))
+        if bird.msec_to_climb < 0:  # ---> this as a command line option... doublejump=true or false
+            QLearningAgent.newIteration()
+            action, prev_state = QLearningAgent.stepAndMakeChoice()
+            if action == 'J':
+                pygame.event.post(pygame.event.Event(MOUSEBUTTONUP))
             # okay, so options are --> no action, or MOUSTBUTTONUP... and we can evaluate all states
             # at this time...
             #choice = random.randint(0, 99)
