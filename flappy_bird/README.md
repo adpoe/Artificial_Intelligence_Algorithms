@@ -24,6 +24,10 @@ To use my smart bird, simply take the following steps:
 `python flappybird.py "qdata.txt"`
 * Watch Flappy crush it.  (the game will run 10x)
 
+### Results
+Based on the current qdata.txt file, I have seen Flappy get well over 100 pipes. 
+![Flappy](flappy_example.png)
+
 ### Report
 The report for this section is found starting on the **first page** of the document located at:
 `/ADP59-CS1571-HW03-REPORT.pdf`

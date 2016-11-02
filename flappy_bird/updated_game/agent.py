@@ -113,7 +113,7 @@ class QLearningAgent:
         if saved_strategy is None:
             self.alpha = lambda n: 1./(1+n)
         else:
-            self.alpha = lambda n: 1./(100+n)
+            self.alpha = lambda n: 1./(10000+n)
 
         # N-Array --> n(s,a)
         # Keeps track of how many times we've been in state s, performing action a
@@ -125,7 +125,7 @@ class QLearningAgent:
                 self.n_data[k] = 1.0
         else:
             for k in self.n_data.iterkeys():
-                self.n_data[k] = 250.0
+                self.n_data[k] = 10.0
 
 
         # path
@@ -137,7 +137,7 @@ class QLearningAgent:
         :return: Returns a list containing all discretized states for Flappy Bird proble
         """
         #nodes = list(itertools.product( (0,1,2) , repeat=2))  # OLD / SAFE
-        nodes = list(itertools.product( (0,1,2,3, 4) , repeat=2))
+        nodes = list(itertools.product( (0,1,2,3,4), repeat=2))
         STATE_ACTION_PAIRS = state_action_pairs = list(itertools.product(nodes, ('S', 'J')))
         return state_action_pairs
 
