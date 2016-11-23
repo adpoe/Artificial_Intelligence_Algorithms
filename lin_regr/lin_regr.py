@@ -9,7 +9,6 @@
 
 import sys
 import ast
-import itertools
 import random
 import numpy
 import copy
@@ -46,13 +45,13 @@ def main():
     else:
         # if there's only one input file, we have the multivariate case,
         # and then we need to split up the data set ourselves
-        print "=======MULTIVARIATE CASE========"
+        print "=======MULTIVARIATE CASE========\n"
         # read in all data
         # permute the examples, because they are currently sorted in some way
         # need to do a random(0,9) and if < 2 --> put in test set
         # get a training_set and test_set
         # get gradient descent variables
-        print "--------TRAINING--------"
+        print "======= INITIAL TEST WITH FEATURE VECTOR UNCHANGED ======="
         training_set, test_set = get_training_and_test_set(sys.argv[1])
         # we'll then have a feature vector on each line --> normalize each data point so that all fall in range [0,1)
         #print "Training Set: \n\n" + str(training_set)
@@ -63,8 +62,6 @@ def main():
         sum_of_sq_err = multivariate_sum_of_squared_error_over_entire_dataset(w0,ws,test_set)
         avg_sq_err = sum_of_sq_err/len(test_set)
         test_set_backup = copy.deepcopy(test_set)
-        print "---------TESTING--------"
-        print "USING MULTIPLE LINEAR REGRESSION"
         print "\tThe AVERAGE Squared Error over the Entire Testing Data Set = "+str(avg_sq_err)
         print "\tThe AVERAGE Overall Error For __any given prediction__ = "+str(numpy.sqrt(avg_sq_err))
         print "\n"
@@ -117,7 +114,7 @@ def main():
         print "\tThe AVERAGE Squared Error over the Entire Testing Data Set = "+str(avg_sq_err)
         print "\tThe AVERAGE Overall Error For __any given prediction__ = "+str(numpy.sqrt(avg_sq_err))
         print "\n"
-        print "======== CONTROL SET: RANDOM GUESSING PARAMETERS ====="
+        print "======== CONTROL SET: RANDOM GUESSING PARAMETERS IN RANGE [-1,1] ====="
         test_set = copy.deepcopy(test_set_backup)
         w0 = random.uniform(-1, 1)
         ws = [random.uniform(-1,1) for x in range(0,13)]
